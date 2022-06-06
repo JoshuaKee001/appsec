@@ -1,0 +1,268 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
+{% block title %}Minister | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+<style>
+    .Container{
+
+
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+
+    }
+   .title{
+
+text-align:center;
+
+    }
+
+  p{
+  padding:10px;
+  }
+
+
+
+
+
+img {
+
+ margin-left: auto;
+  margin-right: auto;
+  display:block;
+  width:100%;
+
+
+}
+
+
+.pad{
+
+padding-bottom:32px;
+}
+
+.pad2{
+
+padding-bottom:55px;
+}
+.pad3 {
+padding-bottom: 30px;
+
+}
+
+.pader3 {
+
+padding-bottom:28px;
+
+}
+
+.pader2 {
+
+padding-bottom:28px;
+
+}
+
+.pader4 {
+
+padding-bottom:28px;
+
+}
+
+
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+.graph_caption{
+margin-left:50px;
+}
+div.gallery2 {
+  margin: 5px;
+  border: 1px solid #ccc;
+
+  width: 300px;
+}
+
+div.gallery3 {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+
+div.gallery2:hover {
+  border: 1px solid #777;
+}
+
+div.gallery2 img {
+  width: 100%;
+  height: auto;
+}
+
+
+div.gallery3:hover {
+  border: 1px solid #777;
+}
+
+div.gallery3 img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+.space {
+
+padding:60px;
+
+}
+
+h1{
+
+text-align:center;
+
+}
+.spac {
+
+padding:60px;
+
+}
+
+h1{
+
+text-align:center;
+
+}
+
+.botnews{
+
+margin-left:25%;
+
+}
+
+.botnews:after{
+
+  content: "";
+  display: table;
+  clear: both;
+
+}
+
+</style>
+<div class="title">
+<h1>Omicron Variant: What You Need to Know .</h1>
+ </div>
+<div class="Container">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/News">News</a></li>
+        <li class="breadcrumb-item active" aria-current="page">World</li>
+    </ol>
+</nav>
+
+    <h2 class="header"> Symptoms</h2>
+    <p class="text1">
+SINGAPORE: The recent rise in COVID-19 cases, hitting five digits on some days, is "not unexpected", said Health Minister Ong Ye Kung on Saturday (Feb 12).
+
+"Omicron is highly transmissible so reaching 15,000, 20,000 or more is something within our expectations. So far, it's been that. It's been staying around 10,000 for some days, which gives us some comfort," he said.
+
+"But as we have mentioned many times, the top line is much less important. The top line is important in the sense that we know where we are on the epidemic curve, that is still important information. But what's more important is the impact on the healthcare capacity."
+
+Singapore reported 10,505 new COVID-19 cases on Saturday, the fourth time this week that daily infections have exceeded the 10,000 mark.
+</p>
+
+     <img src="{{url_for('static', filename='images/xuzhi/1479039.jpg')}}" width="750" height="500">
+
+    <p class="text1">
+Despite the increase in cases, Mr Ong noted that the healthcare system is still holding up.
+
+"The percentage of people requiring oxygen has remained the same. So the numbers have not changed. The number of patients that require oxygen remains at 0.3 per cent. (The) number of patients that needed ICU, or unfortunately passed away is about 0.05 per cent. So we are looking at a level much much lower than Delta, so our healthcare system is still holding up," the Health Minister said.
+
+He added that although there has been an increase in the number of people visiting general practitioners (GPs) due to COVID-19, many of them had "mild or no symptoms" and are visiting clinics for various reasons.
+
+"Many have to get MC so they don't have to go back to work or school. Some have to get discharge memos to show their employers so they can go back to school or work and others go there because it's one way to get ART kits as well," he said.
+
+Mr Ong was speaking on the sidelines of a topping out ceremony at the site of the new Woodlands Health campus.
+
+When asked if there will be any changes to COVID-19 measures, Mr Ong said the multi-ministry task force will be holding a press conference soon.
+    </p>
+
+
+</div>
+
+<div class="space">
+
+</div>
+
+
+<h1> Other news articles you may enjoy</h1>
+
+
+
+<div class="row" style="margin:auto;">
+<div class="gallery">
+  <a target="nav-link" href="/MOHnews">
+    <img src="{{url_for('static', filename='images/xuzhi/2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
+  </a>
+  <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
+
+        <div class="pad3">
+    </div>
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/Omni">
+     <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">Omicron Variant: What You Need to Know .</div>
+        <div class="pad2">
+    </div>
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/Vac">
+   <img src="{{url_for('static', filename='images/xuzhi/vaccination_1.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</div>
+
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/World">
+    <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">    World passes 300 million COVID-19 cases as Omicron breaks records .</div>
+
+  <div class="pad">
+
+  </div>
+    </div>
+</div>
+
+{% endblock %}

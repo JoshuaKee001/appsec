@@ -1,0 +1,210 @@
+{% if current_user.role == "admin" %}
+{% extends "admin_base.html" %}
+{% elif current_user.is_authenticated %}
+{% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/cookiealert.css">{% endblock %}
+{% block title %}Home | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+<!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="10000">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="static/images/homecaro/download.jpeg" class="d-block w-100" alt="...">
+        <div class="carousel-caption d-none d-md-block">
+            <h5>Welcome To DoctorOnTheGo</h5>
+            <p>Your Favourite Online Pharmacy!</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="static/images/homecaro/pharma2.jpeg" class="d-block w-100" alt="...">
+        <div class="carousel-caption d-none  d-md-block">
+            <h5>Welcome To DoctorOnTheGo</h5>
+            <p>Your Favourite Online Pharmacy!</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="static/images/homecaro/pharma3.jpeg" class="d-block w-100" alt="...">
+        <div class="carousel-caption d-none  d-md-block">
+            <h5>Welcome To DoctorOnTheGo</h5>
+            <p>Your Favourite Online Pharmacy!</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+<div class="row" style="margin-top:100px;">
+    <h3 style="text-align:center;">Recent News</h3>
+    <div class="col">
+        <div class="card">
+            <img src="static/images/xuzhi/by Creativeneko.jpg" class="card-img-top" alt="..." height="250px">
+            <div class="card-body">
+              <h5 class="card-title">What is COVID-19?</h5>
+              <p class="card-text">An Article about what covid-19 and this new variant is about</p>
+              <a href="/Background" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <img src="static/images/xuzhi/coronavirus-712.jpg" class="card-img-top" alt="..." height="250px">
+            <div class="card-body">
+              <h5 class="card-title">Covid-19 Measures</h5>
+              <p class="card-text">Article about Up to date COVID-19 Measures in Singapore. How Singapore is planning to fight back!</p>
+              <a href="/Measure" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <img src="static/images/xuzhi/vaccination_1.jpg" class="card-img-top" alt="..." height="250px">
+            <div class="card-body">
+              <h5 class="card-title">News title</h5>
+              <p class="card-text">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'.</p>
+              <a href="/Vac" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+    </div>
+</div>
+
+  {% if usersession %}
+<div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
+  <div class="col-md text-center">
+    <h3>Loyalty pass</h3>
+    <h2 class="display-4">{{purchases}}</h2>
+  </div>
+  <div class="col-md">
+    <h2>Welcome Back {{ user }}!</h2>
+    <p>Keep shopping to get your loyalty pass up! Or just have a look around!</p>
+  <a href="/user" class="btn btn-primary">Head to account!</a>
+  </div>
+</div>
+  {% elif staffsession %}
+  
+<div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
+  <div class="col-md">
+    <h3>Product Sales</h3>
+    {% for i in prod_dict %}
+    <h5 class="display-6">{{i}} : {{prod_dict[i]}} sold</h5>
+    {% endfor %}
+  </div>
+  <div class="col-md">
+    <h2>Hello {{ staff }}!</h2>
+    <p>Welcome back to the website! Look around or get to work !</p>
+  <a href="/staffapp/1" class="btn btn-primary">Head to staff dashboard</a>
+  </div>
+</div>
+  {% else %}
+<div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
+  <div class="col-md" style="background-image:url(static/images/join-us.jpeg); background-size:contain;background-position:center; background-repeat:no-repeat;">
+    <h3>Benefits:</h3>
+    <h5 class="display-6">Discounts!</h5>
+  </div>
+  <div class="col-md">
+    <h2>Become A Member!</h2>
+    <p>Join us to get added benefits from a loyalty pass!</p>
+  <a href="/signup" class="btn btn-primary">Become a Member Today!</a>
+  </div>
+</div>
+  {% endif %}
+
+<div class="row" style="margin:100px 10px 100px 10px;">
+    <h3 style="text-align:center;">Meet the founders</h3>
+    <div class="col">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <img src="https://avatars.dicebear.com/api/croodles-neutral/Calvin.svg" alt=""> 
+              </div>
+              <div class="flip-card-back">
+                <h1>Calvin</h1> 
+                <p>NYP Student : Cybersecurity</p> 
+                <p>Socials : @placeholder</p>
+              </div>
+            </div>
+          </div>
+    </div>
+    <div class="col">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <img src="https://avatars.dicebear.com/api/croodles-neutral/Xu%20Zhi.svg" alt="">
+              </div>
+              <div class="flip-card-back">
+                <h1>Xu Zhi</h1> 
+                <p>NYP Student : Cybersecurity</p> 
+                <p>Socials : @placeholder</p>
+              </div>
+            </div>
+          </div>
+    </div>
+    <div class="col">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <img src="https://avatars.dicebear.com/api/croodles-neutral/AliSa%20.svg" alt="">
+              </div>
+              <div class="flip-card-back">
+                <h1>Alisa</h1> 
+                <p>NYP Student : Cybersecurity</p> 
+                <p>Socials : @placeholder</p>
+              </div>
+            </div>
+          </div>
+    </div>
+    <div class="col">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <img src="https://avatars.dicebear.com/api/croodles-neutral/JoshUA.svg" alt="">
+              </div>
+              <div class="flip-card-back">
+                <h1>Joshua</h1> 
+                <p>NYP Student : Cybersecurity</p> 
+                <p>Socials : @placeholder</p>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+<!-- COOKIES -->
+<!--https://lioshi.github.io/Bootstrap-Cookie-Alert/-->
+<div class="alert text-center cookiealert" role="alert">
+    <b>Do you like cookies?</b> &#x1F36A; We use cookies to ensure you get the best experience on our website. <a
+        href="http://cookiesandyou.com/" target="_blank">Learn more</a>
+
+    <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
+        I agree
+    </button>
+</div>
+<!-- /COOKIES -->
+{% endblock %}
