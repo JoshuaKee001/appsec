@@ -59,6 +59,9 @@ def home():
 @app.route('/login' , methods=["GET", "POST"])
 @limiter.limit("2/second")
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     form = LoginForm()
 
     if form.validate_on_submit():
