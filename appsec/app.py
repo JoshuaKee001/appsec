@@ -8,6 +8,7 @@ from flask_mail import Mail
 import os
 from flask_jwt_extended import JWTManager
 from functools import wraps
+from flask_wtf.csrf import CSRFProtect
 
 from flask_login import (
     UserMixin,
@@ -29,6 +30,7 @@ bcrypt = Bcrypt()
 limiter = Limiter(key_func=get_remote_address)
 mail = Mail()
 jwt = JWTManager()
+csrf = CSRFProtect()
 
 
 def create_app():
@@ -50,6 +52,7 @@ def create_app():
     limiter.init_app(app)
     mail.init_app(app)
     jwt.init_app(app)
+    csrf.init_app(app)
 
     return app
 
