@@ -243,7 +243,7 @@ def reset_password(token):
                 db.session.rollback()
                 flash(f"An error occured !", "danger")
 
-    return render_template('/user/guest/passwordreset.html', form=form)
+    return render_template('/user/guest/passwordreset.html', form=form, user=user)
 
 
 @app.route('/staffinvent/<int:page>', methods=["GET", "POST"])
