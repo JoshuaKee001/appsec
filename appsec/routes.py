@@ -255,6 +255,136 @@ def staffinvent(page=1):
     return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products, page=page)
 
 
+@app.route('/consultatioPg1')
+def consultatioPg1():
+    return render_template('user/guest/xuzhi/consultatioPg1.html')
+
+@app.route('/retrieveConsultation')
+def retrieveConsultation():
+    if current_user.is_authenticated:
+
+        users_dict ={}
+        db = User
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  User.username
+
+
+
+
+        if current_user.is_authenticated:
+            customers_dict = {}
+            db = User
+            try:
+                if 'Customers' in db:
+                    customers_dict = db['Customers']
+                else:
+                    db['Customers'] = customers_dict
+            except:
+                print("Error in retrieving Customers from customer.db.")
+
+
+
+            customers_list = []
+
+
+            for key in customers_dict:
+                customer = customers_dict.get(key)
+                print(customer)
+                print(customer.get_us())
+                print(customer.get_consult())
+                customers_list.append(customer)
+            """
+            for customer in customers_list:
+                bonk = customer.get_us()
+                bonk = str(bonk)
+                print("The id is" + bonk)
+            """
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list,  user = UserName, consultactive = True, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif User.role == "admin":
+        StaffName = session["staff"]
+
+        customers_dict = {}
+        db = User
+        try:
+                if 'Customers' in db:
+                    customers_dict = db['Customers']
+                else:
+                    db['Customers'] = customers_dict
+        except:
+                print("Error in retrieving Customers from customer.db.")
+        db.close()
+
+        customers_list = []
+        var = session["staff"]
+        print(var)
+        for key in customers_dict:
+                customer = customers_dict.get(key)
+                print(customer)
+                print(customer.get_us())
+                print(customer.get_consult())
+                customers_list.append(customer)
+                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, staff = StaffName, consultactive = True, staffsession = True)
+
+    else:
+
+        return redirect(url_for('login'))
+
+@app.route('/createConsultation', methods=['GET', 'POST'])
+def create_consultation():
+    if current_user.is_authenticated:
+     form = createConsultationForm()
+     if form.validate_on_submit():
+        try:
+            first_name = form.first_name.data.lower()
+            last_name = form.last_name.data.lower()
+            email = form.email.data.lower()
+            gender = form.gender.data()
+            date_joined =  form.date_joined.data()
+            doc = form.doc.data()
+            time = form.time.data()
+            remarks = form.remarks.data()
+
+            newconsult = User(first_name = first_name, email=email, last_name = last_name, gender = gender,data_joined = date_joined,doc = doc, time = time, remarks = remarks)
+
+            db.session.add(newconsult)
+            db.session.commit()
+            flash(f"Account Succesfully created", "success")
+            return redirect(url_for("login"))
+
+        except InvalidRequestError:
+            db.session.rollback()
+            flash(f"Something went wrong!", "danger")
+        except IntegrityError:
+            db.session.rollback()
+            flash(f"User already exists!.", "warning")
+        except DataError:
+            db.session.rollback()
+            flash(f"Invalid Entry", "warning")
+        except InterfaceError:
+            db.session.rollback()
+            flash(f"Error connecting to the database", "danger")
+        except DatabaseError:
+            db.session.rollback()
+            flash(f"Error connecting to the database", "danger")
+        except BuildError:
+            db.session.rollback()
+            flash(f"An error occured !", "danger")
+
+    return render_template('user/guest/xuzhi/createConsultation.html', form=form)
+
+
 @app.route('/create_product', methods=["GET", "POST"])
 @login_required
 @required_roles('admin')
@@ -293,6 +423,35 @@ def create_product():
             flash(f"An error occured !", "danger")
 
     return render_template('user/staff/joshua/StaffInventory/CRUDProducts/create_product.html', form=form)
+
+
+@app.route('/News')
+def news():
+    return render_template('user/guest/xuzhi/News.html')
+
+@app.route('/MOHNews')
+def MOHnews():
+    return render_template('user/guest/xuzhi/MOHnews.html')
+
+@app.route("/Omni")
+def Omni():
+    return render_template('user/guest/xuzhi/Omni.html')
+
+@app.route("/Measure")
+
+def Measure():
+    return render_template('user/guest/xuzhi/Measure.html')
+@app.route('/Vac')
+def Vac():
+    return render_template('user/guest/xuzhi/Vac.html')
+
+@app.route('/Background')
+def Background():
+    return render_template('user/guest/xuzhi/Background.html')
+@app.route('/help')
+def Help():
+    return render_template('user/guest/Alisa/help.html')
+
 
 
 if __name__ == "__main__":
