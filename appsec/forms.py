@@ -1,10 +1,12 @@
-from wtforms import StringField, PasswordField, BooleanField, IntegerField, DateField, TextAreaField, SelectField, FloatField
+from wtforms import StringField, PasswordField, BooleanField, IntegerField, DateField, TextAreaField, SelectField, FloatField, EmailField, RadioField
+from wtforms_components import DateRange
 from flask_wtf import FlaskForm
 from wtforms.validators import InputRequired, Length, EqualTo, Email, Regexp, Optional
 import email_validator
 from flask_login import current_user
 from wtforms import ValidationError, validators
 from models import User
+from datetime import date
 
 
 class LoginForm(FlaskForm):
@@ -85,6 +87,17 @@ class ResetPasswordForm(FlaskForm):
         Length(8, 72),
         EqualTo("new_password", message="Passwords must match")
     ])
+
+    
+class createConsultationForm(FlaskForm):
+    first_name = StringField('First Name', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    last_name = StringField('Last Name', [validators.Length(min=1, max=150), validators.DataRequired()])
+    gender = SelectField('Gender', [validators.DataRequired()], choices=[('', 'Select'), ('F', 'Female'), ('M', 'Male')], default='')
+    email = EmailField('Email', [validators.Email(), validators.DataRequired()])
+    date_joined = DateField('Date of appointment(YY-MM-DD)', format='%Y-%m-%d',validators=[DateRange(min=date.today())])
+    time = SelectField('Appointment time', [validators.DataRequired()], choices=[('9.00am - 9.30am','9.00am - 9.30am'),('10.00am - 10.30am', '10.00am - 10.30am'), ('11.00am - 11.30am', '11.00am - 11.30am'),('12.00pm -12.30pm','12.00pm -12.30pm'),('3.00pm - 3.30pm','3.00pm - 3.30pm'),('4.00pm - 4.30pm', '4.00pm - 4.30pm'),('5.00pm -5.30pm',' 5.00pm -5.30pm')], default = '9.00am - 9.30am')
+    remarks = TextAreaField('Additional request', [validators.Optional()])
+    doc=RadioField('Choice of doctor', choices=[('T', 'Dr Tan'), ('M', 'Dr Mok'), ('L', 'Dr Lim')], default='T')
 
 
 class CreateProductForm(FlaskForm):
