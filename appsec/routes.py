@@ -293,7 +293,7 @@ def retrieveConsultation():
 
 
 
-            customers_list = []
+            customers_list = User
 
 
             for key in customers_dict:
@@ -308,7 +308,7 @@ def retrieveConsultation():
                 bonk = str(bonk)
                 print("The id is" + bonk)
             """
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list,  user = UserName, consultactive = True, usersession = True)
+            return render_template('user/guest/xuzhi/retrieveConsultation.html')
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -345,23 +345,26 @@ def retrieveConsultation():
 def create_consultation():
     if current_user.is_authenticated:
      form = createConsultationForm()
+     user = current_user
+
      if form.validate_on_submit():
         try:
             first_name = form.first_name.data.lower()
             last_name = form.last_name.data.lower()
             email = form.email.data.lower()
-            gender = form.gender.data()
-            date_joined =  form.date_joined.data()
-            doc = form.doc.data()
-            time = form.time.data()
-            remarks = form.remarks.data()
+            gen = form.gender.data.lower()
+            doc = form.doc.data.lower()
+            time = form.time.data.lower()
+            remarks = form.remarks.data.lower()
+            print('here')
 
-            newconsult = User(first_name = first_name, email=email, last_name = last_name, gender = gender,data_joined = date_joined,doc = doc, time = time, remarks = remarks)
-
+            newconsult = User(first_name = first_name, email=email, last_name = last_name,gender = gen,doc = doc, time = time, remarks = remarks)
+            print('here2')
             db.session.add(newconsult)
             db.session.commit()
-            flash(f"Account Succesfully created", "success")
-            return redirect(url_for("login"))
+            print('here3')
+
+            return render_template('user/guest/xuzhi/retrieveConsultation.html')
 
         except InvalidRequestError:
             db.session.rollback()
