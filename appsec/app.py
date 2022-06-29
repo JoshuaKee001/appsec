@@ -44,6 +44,11 @@ def create_app():
     app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
+    app.config.update(
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE='Lax',
+    )
 
     login_manager.init_app(app)
     db.init_app(app)
