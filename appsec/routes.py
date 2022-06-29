@@ -51,6 +51,15 @@ def session_handler():
     app.permanent_session_lifetime = timedelta(minutes=1)
 
 
+@app.after_request
+def add_header(response):
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    # response.headers['Content-Security-Policy'] = "default-src 'self'"
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     return render_template("home.html")
