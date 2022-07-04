@@ -15,14 +15,6 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(20))
 
     age = db.Column(db.String(3))
-    first_name = db.Column(db.String(30), nullable=True)
-    last_name = db.Column(db.String(40), nullable=True)
-    emai = db.Column(db.String(120), nullable=True)
-    gender = db.Column(db.String(10), nullable=True)
-    date_joined = db.Column(db.String(50), nullable=True)
-    doc = db.Column(db.String(60), nullable=True, unique=False)
-    time = db.Column(db.String(30), nullable=True)
-    remarks = db.Column(db.String(30), nullable=True)
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -53,3 +45,15 @@ class Product(db.Model):
     short_description = db.Column(db.String(100))
     long_description = db.Column(db.String)
     stock = db.Column(db.Integer)
+
+class Userappointment:
+    id = db.Column(db.Integer,primary_key = True)
+    first_name = db.Column(db.String(30), nullable=True)
+    last_name = db.Column(db.String(40), nullable=True)
+    emai = db.Column(db.String(120), nullable=True)
+    gender = db.Column(db.String(10), nullable=True)
+    date_joined = db.Column(db.String(50), nullable=True)
+    doc = db.Column(db.String(60), nullable=True, unique=False)
+    time = db.Column(db.String(30), nullable=True)
+    remarks = db.Column(db.String(30), nullable=True)
+
