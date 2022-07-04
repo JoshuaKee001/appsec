@@ -65,7 +65,7 @@ def home():
     return render_template("home.html")
 
 
-@app.route('/login' , methods=["GET", "POST"])
+@app.route('/login', methods=["GET", "POST"])
 @limiter.limit("2/second")
 def login():
     if current_user.is_authenticated:

@@ -46,7 +46,8 @@ class Product(db.Model):
     long_description = db.Column(db.String)
     stock = db.Column(db.Integer)
 
-class Userappointment:
+
+class Userappointment(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     first_name = db.Column(db.String(30), nullable=True)
     last_name = db.Column(db.String(40), nullable=True)
