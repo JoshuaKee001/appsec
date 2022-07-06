@@ -5,6 +5,7 @@ import os
 from time import time
 
 
+
 class User(UserMixin, db.Model):
     __tablename__ = "user"
 
@@ -46,8 +47,7 @@ class Product(db.Model):
     long_description = db.Column(db.String)
     stock = db.Column(db.Integer)
 
-
-class Userappointment(db.Model):
+class userappointment(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     first_name = db.Column(db.String(30), nullable=True)
     last_name = db.Column(db.String(40), nullable=True)
@@ -57,4 +57,6 @@ class Userappointment(db.Model):
     doc = db.Column(db.String(60), nullable=True, unique=False)
     time = db.Column(db.String(30), nullable=True)
     remarks = db.Column(db.String(30), nullable=True)
+
+
 
