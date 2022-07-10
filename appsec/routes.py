@@ -32,7 +32,7 @@ from flask_login import (
 )
 
 from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
-from models import User, Product
+from models import User, Product, userappointment
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, ResetPasswordForm, CreateProductForm, createConsultationForm
 from functions import send_password_reset_email
 
@@ -51,21 +51,12 @@ def session_handler():
     app.permanent_session_lifetime = timedelta(minutes=1)
 
 
-@app.after_request
-def add_header(response):
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-    # response.headers['Content-Security-Policy'] = "default-src 'self'"
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    return response
-
-
 @app.route("/", methods=["GET", "POST"])
 def home():
     return render_template("home.html")
 
 
-@app.route('/login', methods=["GET", "POST"])
+@app.route('/login' , methods=["GET", "POST"])
 @limiter.limit("2/second")
 def login():
     if current_user.is_authenticated:
@@ -274,102 +265,69 @@ def retrieveConsultation():
 
         users_dict ={}
         db = User
-
-        try:
-            if 'Users' in db:
-                users_dict = db['Users']
-            else:
-                db["Users"] = users_dict
-        except:
-            print("Error in retrieving User from staff.db")
-
-
         UserName =  User.username
-
-
-
-
         if current_user.is_authenticated:
-            customers_dict = {}
-            db = User
-            try:
-                if 'Customers' in db:
-                    customers_dict = db['Customers']
-                else:
-                    db['Customers'] = customers_dict
-            except:
-                print("Error in retrieving Customers from customer.db.")
-
-
-
+            z=0
+            fname = "Empty"
+            lname = "Empty"
+            email = "Empty"
+            gen = "Empty"
+            doc = "Empty"
+            time = "Empty"
+            remarks = "Empty"
+            user = current_user
+            i = current_user.id
             customers_list = User
+            test = userappointment
+            IDs = []
+            IDs.append(i)
+            info = userappointment.query.filter_by(id = i ).all()
+            print(info)
+            fname = info.first_name
+            lname = info.last_name
+            email = info.email
+            doc = info.doc
+            time = info.time
+            remarks = info.remarks
 
 
-            for key in customers_dict:
-                customer = customers_dict.get(key)
-                print(customer)
-                print(customer.get_us())
-                print(customer.get_consult())
-                customers_list.append(customer)
-            """
-            for customer in customers_list:
-                bonk = customer.get_us()
-                bonk = str(bonk)
-                print("The id is" + bonk)
-            """
-            return render_template('user/guest/xuzhi/retrieveConsultation.html')
+
+
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=z,  consultactive = True, usersession = True, fname = fname, lname = lname, email = email, gen = gen, doc = doc, time = time, remarks = remarks  )
         else:
             session.clear()
             return redirect(url_for('home'))
-    elif User.role == "admin":
-        StaffName = session["staff"]
-
-        customers_dict = {}
-        db = User
-        try:
-                if 'Customers' in db:
-                    customers_dict = db['Customers']
-                else:
-                    db['Customers'] = customers_dict
-        except:
-                print("Error in retrieving Customers from customer.db.")
-        db.close()
-
-        customers_list = []
-        var = session["staff"]
-        print(var)
-        for key in customers_dict:
-                customer = customers_dict.get(key)
-                print(customer)
-                print(customer.get_us())
-                print(customer.get_consult())
-                customers_list.append(customer)
-                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, staff = StaffName, consultactive = True, staffsession = True)
 
     else:
 
         return redirect(url_for('login'))
 
+
+
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
+    form = createConsultationForm()
     if current_user.is_authenticated:
-     form = createConsultationForm()
+
      user = current_user
+     id = user.id
+     appoint = userappointment
 
      if form.validate_on_submit():
         try:
-            first_name = form.first_name.data.lower()
-            last_name = form.last_name.data.lower()
-            email = form.email.data.lower()
-            gen = form.gender.data.lower()
-            doc = form.doc.data.lower()
-            time = form.time.data.lower()
-            remarks = form.remarks.data.lower()
+            print("hey ")
+
+            appoint.user = id
+            appoint.first_name = form.first_name.data.lower()
+            appoint.last_name = form.last_name.data.lower()
+            appoint.email = form.email.data.lower()
+            appoint.gen = form.gender.data.lower()
+            appoint.doc = form.doc.data.lower()
+            appoint.time = form.time.data.lower()
+            appoint.remarks = form.remarks.data.lower()
+            print(str(appoint.first_name))
             print('here')
 
-            newconsult = User(first_name = first_name, email=email, last_name = last_name,gender = gen,doc = doc, time = time, remarks = remarks)
-            print('here2')
-            db.session.add(newconsult)
             db.session.commit()
             print('here3')
 
@@ -393,8 +351,7 @@ def create_consultation():
         except BuildError:
             db.session.rollback()
             flash(f"An error occured !", "danger")
-
-    return render_template('user/guest/xuzhi/createConsultation.html', form=form)
+    return render_template('user/guest/xuzhi/createConsultation.html', form = form)
 
 
 @app.route('/create_product', methods=["GET", "POST"])
