@@ -6,7 +6,8 @@ from flask import (
     redirect,
     flash,
     url_for,
-    session
+    session,
+    request
 )
 
 from datetime import timedelta
@@ -253,6 +254,19 @@ def staffinvent(page=1):
     products = Product.query.paginate(page=page, per_page=10)
 
     return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products, page=page)
+
+
+@app.route('/store', methods=["GET", "POST"])
+def store():
+    page = request.args.get('page', 1, type=int)
+    products = Product.query.paginate(page=page, per_page=8)
+
+    return render_template('user/guest/joshua/GuestStore/store.html', products=products)
+
+
+@app.route('/search', methods=["GET","POST"])
+def search():
+    pass
 
 
 @app.route('/consultatioPg1')
