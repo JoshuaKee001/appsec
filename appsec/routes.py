@@ -32,7 +32,7 @@ from flask_login import (
 )
 
 from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
-from models import User, Product, userappointment
+from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, ResetPasswordForm, CreateProductForm, createConsultationForm
 from functions import send_password_reset_email
 
@@ -278,22 +278,11 @@ def retrieveConsultation():
             user = current_user
             i = current_user.id
             customers_list = User
-            test = userappointment
-            IDs = []
-            IDs.append(i)
-            info = userappointment.query.filter_by(id = i ).all()
-            print(info)
-            fname = info.first_name
-            lname = info.last_name
-            email = info.email
-            doc = info.doc
-            time = info.time
-            remarks = info.remarks
+            test = user
+            print('test' ,test )
+            info = user.query.get(i)
 
-
-
-
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=z,  consultactive = True, usersession = True, fname = fname, lname = lname, email = email, gen = gen, doc = doc, time = time, remarks = remarks  )
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=z,  consultactive = True, info = info  )
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -310,8 +299,8 @@ def create_consultation():
     if current_user.is_authenticated:
 
      user = current_user
-     id = user.id
-     appoint = userappointment
+     id = current_user.id
+     appoint = user
 
      if form.validate_on_submit():
         try:
@@ -330,8 +319,13 @@ def create_consultation():
 
             db.session.commit()
             print('here3')
+            i = current_user.id
+            info = user.query.filter_by(first_name=form.first_name.data.lower()).first()
+            print(i)
+            print('info',info)
 
-            return render_template('user/guest/xuzhi/retrieveConsultation.html')
+
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', consultactive = True, info = info )
 
         except InvalidRequestError:
             db.session.rollback()
