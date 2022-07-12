@@ -40,27 +40,23 @@
         </tr>
       </thead>
       <tbody>
-
-        {% for customer in customers_list %}
-        {% if var == customer.get_us() %}
-
         <tr>
-          <td>{{ customer.get_first_name() }}</td>
-          <td>{{ customer.get_last_name() }}</td>
-          <td>{{ customer.get_gender() }}</td>
-          <td>{{ customer.get_email() }}</td>
-          <td>{{ customer.get_date() }}</td>
-          <td>{{ customer.get_time() }}</td>
+          <td>{{ info.fname }}</td>
+          <td>{{ info.lname }}</td>
+          <td>{{ info.gen }}</td>
+          <td>{{ info.email }}</td>
+          <td>{{ info.doc }}</td>
+          <td>{{ info.time }}</td>
 
-          {% if customer.get_doc() == "T"%}
+          {% if info.doc == "T"%}
           <td>Dr Tan</td>
 
 
-          {% elif customer.get_doc() == "M" %}
+          {% elif info.doc == "M" %}
           <td>Dr Mok</td>
 
 
-          {% elif customer.get_doc() == "L" %}
+          {% elif info.doc == "L" %}
 
           <td>Dr Lim</td>
 
@@ -68,16 +64,16 @@
 
 
           {% endif %}
-          {% if customer.get_doc() == "T"%}
+          {% if info.doc == "T"%}
 
           <td> Zoom Link</td>
 
-          {% elif customer.get_doc() == "M" %}
+          {% elif info.doc  == "M" %}
 
           <td>Zoom Link</td>
 
 
-          {% elif customer.get_doc() == "L" %}
+          {% elif info.doc  == "L" %}
 
           <td>Zoom link</td>
 
@@ -86,9 +82,9 @@
 
 
           {% endif %}
-          <td>{{ customer.get_remarks() }}</td>
+          <td>{{ info.doc }}</td>
 
-          <td><a href="/updateConsultation/{{customer.get_consult()}}" class="btn btn-warning">Update</a></td>
+          <td><a href="" class="btn btn-warning">Update</a></td>
           <td>
 
 
@@ -96,14 +92,14 @@
 
 
 
-            <form action="{{url_for('delete_consultation', id=customer.get_consult())}}" method="POST">
-              <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?');">-->
+            <form action="" method="POST">
+
               <!-- Button to Open the Modal -->
               <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                data-bs-target="#myModal_{{customer.get_consult()}}">
+                data-bs-target="">
                 Delete
               </button>
-              <div class="modal" id="myModal_{{customer.get_consult()}}">
+              <div class="modal" id="">
                 <div class="modal-dialog">
                   <div class="modal-content">
 
@@ -115,7 +111,7 @@
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                      Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}
+                      Are you sure you want to delete {{info.fname}} {{info.lname}}
                     </div>
 
                     <!-- Modal footer -->
@@ -132,8 +128,8 @@
           </td>
         </tr>
 
-        {% endif %}
-        {% endfor %}
+
+
 
       </tbody>
     </table>
@@ -141,5 +137,6 @@
   <div class="row">
     <div class="col"> <a class="btn btn-success" href="/createConsultation">Create An Appointment</a> </div>
   </div>
+    {% endblock %}
 </div>
-{% endblock %}
+

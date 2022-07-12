@@ -107,7 +107,10 @@ font-size:1.1em;
 
 <h1 class="display-4">Your appointment</h1>
 <div class="container">
-<form method="POST" action="">
+
+  <form action="{{ request.path }}" method="POST" class="row g-3">
+    {{ form.csrf_token }}
+
 <div class="text-primary">
 
   <div class="form-group">
