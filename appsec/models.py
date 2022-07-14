@@ -45,18 +45,10 @@ class Product(db.Model):
     __tablename__ = "product"
 
     id = db.Column(db.Integer, primary_key=True)
-    img_file_name = db.Column(db.String)
-    name = db.Column(db.String)
+    img_file_name = db.Column(db.String(50))
+    name = db.Column(db.String(100))
     price = db.Column(db.Float)
     category = db.Column(db.String(50))
     short_description = db.Column(db.String(100))
-    long_description = db.Column(db.String)
+    long_description = db.Column(db.String(3000))
     stock = db.Column(db.Integer)
-
-
-
-
-
-
-
-
