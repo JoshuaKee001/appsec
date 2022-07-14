@@ -10,6 +10,20 @@
             <div class="login-form bg-colour mt-6 p-4" id="loginForm">
                 <form action="" method="POST" class="row g-3" enctype="multipart/form-data">
 
+                    {{ form.csrf_token }}
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
                     <h4 class="text-black">Edit a product</h4>
 
                     <div class="col-12">
@@ -74,6 +88,9 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
         <form action="" method="POST">
+
+            {{ form.csrf_token }}
+
           <button type="submit" class="btn btn-danger">Delete</button>
         </form>
       </div>

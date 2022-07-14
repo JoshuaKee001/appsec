@@ -256,6 +256,80 @@ def staffinvent(page=1):
     return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products, page=page)
 
 
+@app.route('/create_product', methods=["GET", "POST"])
+@login_required
+@required_roles('admin')
+def create_product():
+    form = CreateProductForm()
+    if form.validate_on_submit():
+        try:
+            product = Product(name=form.name.data,
+                              price=form.price.data,
+                              category=form.category.data,
+                              short_description=form.short_description.data,
+                              long_description=form.long_description.data,
+                              stock=form.stock.data)
+            db.session.add(product)
+            db.session.commit()
+            flash(f"Product has been added", "success")
+            return redirect(url_for('staffinvent', page=1))
+
+        except InvalidRequestError:
+            db.session.rollback()
+            flash(f"Something went wrong!", "danger")
+        except IntegrityError:
+            db.session.rollback()
+            flash(f"User already exists!.", "warning")
+        except DataError:
+            db.session.rollback()
+            flash(f"Invalid Entry", "warning")
+        except InterfaceError:
+            db.session.rollback()
+            flash(f"Error connecting to the database", "danger")
+        except DatabaseError:
+            db.session.rollback()
+            flash(f"Error connecting to the database", "danger")
+        except BuildError:
+            db.session.rollback()
+            flash(f"An error occured !", "danger")
+
+    return render_template('user/staff/joshua/StaffInventory/CRUDProducts/create_product.html', form=form)
+
+
+@app.route('/edit_product', methods=["GET", "POST"])
+def edit_product():
+    id = request.args.get('id')
+    product = Product.query.filter(Product.id.contains(id)).first()
+    form = CreateProductForm(request.form)
+
+    if request.method == 'POST' and form.validate_on_submit():
+        product.name = form.name.data
+        product.price = form.price.data
+        product.category = form.category.data
+        product.short_description = form.short_description.data
+        product.long_description = form.long_description.data
+        product.stock = form.stock.data
+
+        db.session.commit()
+        return redirect(url_for('staffinvent', page=1))
+
+    elif request.method == 'GET' and product:
+        form.name.data = product.name
+        form.price.data = product.price
+        form.category.data = product.category
+        form.short_description.data = product.short_description
+        form.long_description.data = product.long_description
+        form.stock.data = product.stock
+
+    elif request.method == "POST":
+        db.session.delete(product)
+        db.session.commit()
+
+        return redirect(url_for('staffinvent', page=1))
+
+    return render_template('user/staff/joshua/StaffInventory/CRUDProducts/edit_product.html', product=product, form=form)
+
+
 @app.route('/store', methods=["GET", "POST"])
 def store():
     page = request.args.get('page', 1, type=int)
@@ -360,46 +434,6 @@ def create_consultation():
             db.session.rollback()
             flash(f"An error occured !", "danger")
     return render_template('user/guest/xuzhi/createConsultation.html', form = form)
-
-
-@app.route('/create_product', methods=["GET", "POST"])
-@login_required
-@required_roles('admin')
-def create_product():
-    form = CreateProductForm()
-    if form.validate_on_submit():
-        try:
-            product = Product(name=form.name.data,
-                              price=form.price.data,
-                              category=form.category.data,
-                              short_description=form.short_description.data,
-                              long_description=form.long_description.data,
-                              stock=form.stock.data)
-            db.session.add(product)
-            db.session.commit()
-            flash(f"Product has been added", "success")
-            return redirect(url_for('staffinvent'))
-
-        except InvalidRequestError:
-            db.session.rollback()
-            flash(f"Something went wrong!", "danger")
-        except IntegrityError:
-            db.session.rollback()
-            flash(f"User already exists!.", "warning")
-        except DataError:
-            db.session.rollback()
-            flash(f"Invalid Entry", "warning")
-        except InterfaceError:
-            db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
-        except DatabaseError:
-            db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
-        except BuildError:
-            db.session.rollback()
-            flash(f"An error occured !", "danger")
-
-    return render_template('user/staff/joshua/StaffInventory/CRUDProducts/create_product.html', form=form)
 
 
 @app.route('/News')
