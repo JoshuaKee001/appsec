@@ -1,5 +1,6 @@
 from hashlib import new
 from sre_constants import CH_LOCALE
+import os
 from flask import (
     Flask,
     render_template,
@@ -77,6 +78,11 @@ def login():
             flash("Wrong username or password", "danger")
 
     return render_template('user/guest/login.html', form=form)
+
+
+@app.route('/google_login', methods=["GET", "POST"])
+def google_login():
+    pass
 
 
 @app.route('/signup', methods=["GET", "POST"])
