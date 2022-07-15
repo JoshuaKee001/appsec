@@ -14,6 +14,10 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired(), Length(8, 72)])
 
 
+class EmptyForm(FlaskForm):
+    fake_field = StringField()
+
+
 class SignUpForm(FlaskForm):
     username = StringField("", validators=[
         InputRequired(),

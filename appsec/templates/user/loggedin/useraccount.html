@@ -108,7 +108,10 @@
                      </div>
                   </div>
                </div>
-               <form action="" method="POST" style="float:right;">
+               <form action="/delete_account" method="POST" style="float:right;">
+
+                  {{ form.csrf_token }}
+
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                      data-bs-target="#myModal_Delete">Delete Account</button>
                   <div class="modal" id="myModal_Delete">

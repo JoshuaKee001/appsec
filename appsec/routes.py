@@ -35,7 +35,7 @@ from flask_login import (
 
 from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
 from models import User, Product
-from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, ResetPasswordForm, CreateProductForm, createConsultationForm
+from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm
 from functions import send_password_reset_email
 
 
@@ -133,7 +133,9 @@ def logout():
 @app.route('/user', methods=['GET', 'POST'])
 @login_required
 def user():
-    return render_template('user/loggedin/useraccount.html', name=current_user)
+    form = EmptyForm()
+
+    return render_template('user/loggedin/useraccount.html', name=current_user, form=form)
 
 
 @app.route('/change_password', methods=["GET", "POST"])
@@ -303,6 +305,8 @@ def create_product():
 
 
 @app.route('/edit_product', methods=["GET", "POST"])
+@login_required
+@required_roles('admin')
 def edit_product():
     id = request.args.get('id')
     product = Product.query.filter(Product.id.contains(id)).first()
@@ -334,6 +338,17 @@ def edit_product():
         return redirect(url_for('staffinvent', page=1))
 
     return render_template('user/staff/joshua/StaffInventory/CRUDProducts/edit_product.html', product=product, form=form)
+
+
+@app.route('/delete_account', methods=["GET", "POST"])
+@login_required
+def delete_account():
+    if request.method == "POST":
+        db.session.delete(current_user)
+        db.session.commit()
+        flash(f'Account has been deleted', 'info')
+
+        return redirect(url_for('home'))
 
 
 @app.route('/store', methods=["GET", "POST"])
