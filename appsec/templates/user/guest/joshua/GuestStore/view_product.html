@@ -70,6 +70,7 @@
 
                   <div class="m-bot15"> <strong>Price: $</strong> <span>{{ product.price }}</span></div>
                   <form action="" method="POST">
+                      {{ form.csrf_token() }}
                     <div class="form-group">
                         {{ render_field(form.quantity, class="form-control") }}
                     </div>
