@@ -80,11 +80,6 @@ def login():
     return render_template('user/guest/login.html', form=form)
 
 
-@app.route('/google_login', methods=["GET", "POST"])
-def google_login():
-    pass
-
-
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
     form = SignUpForm()
