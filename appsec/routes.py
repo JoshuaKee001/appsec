@@ -486,6 +486,7 @@ def minusprod(id):
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
 
+
 @app.route('/retrieveConsultation')
 def retrieveConsultation():
     if current_user.is_authenticated:
@@ -495,19 +496,13 @@ def retrieveConsultation():
         UserName =  User.username
         if current_user.is_authenticated:
             z=0
-            fname = "Empty"
-            lname = "Empty"
-            email = "Empty"
-            gen = "Empty"
-            doc = "Empty"
-            time = "Empty"
             remarks = "Empty"
             user = current_user
             i = current_user.id
             customers_list = User
             test = user
             print('test' ,test )
-            info = user.query.get(i)
+            info = user.query.filter_by(id=user.id).first()
 
             return render_template('user/guest/xuzhi/retrieveConsultation.html', count=z,  consultactive = True, info = info  )
         else:
@@ -525,28 +520,29 @@ def create_consultation():
     form = createConsultationForm()
     if current_user.is_authenticated:
 
-     user = current_user
-     id = current_user.id
-     appoint = user
+      user = current_user
+      id = current_user.id
+      appoint = user
 
-     if form.validate_on_submit():
+      if form.validate_on_submit():
         try:
             print("hey ")
-
             appoint.user = id
             appoint.first_name = form.first_name.data.lower()
             appoint.last_name = form.last_name.data.lower()
-            appoint.email = form.email.data.lower()
+            appoint.date_joined = form.date_joined.data
             appoint.gen = form.gender.data.lower()
             appoint.doc = form.doc.data.lower()
             appoint.time = form.time.data.lower()
             appoint.remarks = form.remarks.data.lower()
-            print(str(appoint.first_name))
-            print('here')
+
 
             db.session.commit()
-            print('here3')
+
             i = current_user.id
+
+
+
             info = user.query.filter_by(first_name=form.first_name.data.lower()).first()
             print(i)
             print('info',info)
@@ -573,6 +569,7 @@ def create_consultation():
             db.session.rollback()
             flash(f"An error occured !", "danger")
     return render_template('user/guest/xuzhi/createConsultation.html', form = form)
+
 
 
 @app.route('/News')
