@@ -8,7 +8,8 @@ from flask import (
     flash,
     url_for,
     session,
-    request
+    request,
+
 )
 
 from datetime import timedelta
@@ -33,9 +34,10 @@ from flask_login import (
     login_required,
 )
 
-from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
+from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles, csrf
 from models import User, Product
-from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm
+from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, ResetPasswordForm, \
+    CreateProductForm, createConsultationForm, EmptyForm, Quantity
 from functions import send_password_reset_email
 
 
@@ -45,6 +47,8 @@ def load_user(user_id):
 
 
 app = create_app()
+#activate csrf
+csrf.init_app(app)
 
 
 @app.before_request
@@ -358,6 +362,129 @@ def store():
 def search():
     pass
 
+@app.route('/view_product', methods=["GET", "POST"])
+def view_product():
+    not_enough = False
+    id = request.args.get('id')
+    products = Product.query.filter(Product.id.contains(id))
+    quantity_form = Quantity(request.form)
+    if request.method == "POST" and quantity_form.validate_on_submit():
+        if"cart" in session:
+            cart = session["cart"]
+            for s in products:
+                if quantity_form.quantity.data <= s.stock:
+                    for i in cart:
+                        if i == s.name:
+                            if cart[i] + quantity_form.quantity.data <= s.stock:
+                                cart[i] = cart[i] + quantity_form.quantity.data
+                else:
+                    not_enough = True
+            session["cart"] = cart
+        else:
+            cart = {}
+            for i in products:
+                if quantity_form.quantity.data <= i.stock:
+                    cart[i.name] = quantity_form.quantity.data
+                    session["cart"] = cart
+
+        return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, usersession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
+    else:
+        return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, usersession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
+    # else:
+    #     session.clear()
+    #     return redirect(url_for("login"))
+
+@app.route('/cart',methods=['GET', 'POST'])
+def cart():
+    if current_user.is_authenticated:
+        # users_dict = db['Users']
+        # db["Users"] = users_dict
+
+        # need to figure out how to store & retrieve user purchases
+        # purchases = users_dict[idNumber].get_purchases()
+        # db.close()
+
+        if "cart" in session:
+            # if valid_session:
+            total = 0
+            cart = session["cart"]
+            products = Product.query.all()
+            for item in cart:
+                for product in products:
+                    if item == product.name:
+                        total += cart.get(item) * product.price
+
+            original_total = total
+
+            # discount = False
+            # if purchases == 5:
+            #     discount = True
+            #     total = total * 0.9
+            # elif purchases == 10:
+            #     discount = True
+            #     total = total * 0.8
+            # elif purchases == 15:
+            #     discount = True
+            #     total = total * 0.7
+            # elif purchases == 20:
+            #     discount = True
+            #     total = total * 0.5
+
+            session["total"] = total
+            noitem = len(cart)
+            return render_template('user/guest/cart_feedback/cart.html', usersession = True, cart = cart, products = products, total = total, num = noitem, original_total = original_total)
+        else:
+            return redirect(url_for('home'))
+
+    else:
+        if "cart" in session:
+            total = 0
+            cart = session["cart"]
+            products = Product.query.all()
+            for item in cart:
+                for product in products:
+                    if item == product.name:
+                        total += cart.get(item) * product.price
+            session["total"] = total
+            noitem = len(cart)
+            return render_template('user/guest/cart_feedback/cart.html', cart = cart, products = products, total = total, num = noitem)
+        else:
+            empty = True
+            return render_template('user/guest/cart_feedback/cart.html',empty = empty)
+
+#remove product from cart
+@app.route('/removeprod/<id>',methods=['GET', 'POST'])
+def removeprod():
+    cart = session["cart"]
+    cart.pop(id)
+    if len(cart) == 0:
+        session.pop("cart", None)
+    else:
+        session["cart"] = cart
+
+    return redirect(url_for('cart'))
+
+#add quantity in cart
+@app.route('/addprod/<id>', methods = ["GET","POST"])
+def addprod(id):
+    cart = session["cart"]
+    cart[id] += 1
+    session["cart"] = cart
+    return redirect(url_for('cart'))
+
+#minus quantity in cart
+@app.route('/minusprod/<id>', methods = ["GET","POST"])
+def minusprod(id):
+    cart = session["cart"]
+    cart[id] -= 1
+    if cart[id] == 0:
+        cart.pop(id)
+    if len(cart) == 0:
+        session.pop("cart", None)
+    else:
+        session["cart"] = cart
+    return redirect(url_for('cart'))
+
 
 @app.route('/consultatioPg1')
 def consultatioPg1():
@@ -475,6 +602,8 @@ def Vac():
 @app.route('/Background')
 def Background():
     return render_template('user/guest/xuzhi/Background.html')
+
+
 @app.route('/help')
 def Help():
     return render_template('user/guest/Alisa/help.html')
