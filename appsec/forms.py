@@ -113,6 +113,3 @@ class CreateProductForm(FlaskForm):
     short_description = StringField("Short Description:", validators=[InputRequired()])
     long_description = TextAreaField("Long Description:", validators=[InputRequired()])
     stock = IntegerField("Stock:", validators=[InputRequired()])
-
-class Quantity(FlaskForm):
-    quantity = IntegerField("Quantity:", [validators.DataRequired()])
