@@ -611,7 +611,6 @@ def feedback():
     form = FeedbackForm()
     if form.validate_on_submit():
         user = current_user
-        id = current_user.id
         feedback = user
 
         feedback.user = id
@@ -624,7 +623,10 @@ def feedback():
     else:
         return render_template('user/guest/alisa/feedback.html', usersession = True, form = form,  contactactive = True)
 
-#need add feedback submit button
+#feedback submit button
+@app.route('/feedback_submit', methods=["GET", "POST"])
+def fb_submit():
+    return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
 
 
 if __name__ == "__main__":
