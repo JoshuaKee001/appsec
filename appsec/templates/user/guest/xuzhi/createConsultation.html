@@ -150,10 +150,7 @@ font-size:1.1em;
     {# wtf.form_field(form.gender, class="form-control") #}
     {{ render_field(form.gender, class="form-control") }}
   </div>
-  <div class="form-group">
-    {# wtf.form_field(form.email, class="form-control") #}
-    {{ render_field(form.email, class="form-control") }}
-  </div>
+
 
   <div class="form-group">
     {# wtf.form_field(form.date_joined, class="form-control datepicker") #}
@@ -169,7 +166,7 @@ font-size:1.1em;
       {# wtf.form_field(form.remarks, class="form-control") #}
       {{ render_field(form.remarks, class="form-control") }}
     </div>
-    {% if samedate and sametime and samedoc %}<div class="text-danger"><span id="error">The Doctor for this date and time is unavailable</span></div>{% endif %}
+
   </div>
   <form action="retrieveConsultation">
   <input type="submit" value="Submit" class="btn btn-primary"/>
@@ -226,6 +223,7 @@ font-size:1.1em;
                document.getElementById("img").width = "400";
                document.getElementById("img").height = "400";
                document.getElementById("result").style.fontSize ="1.5em"
+               PLACEHOLDER = "{% if samedate and sametime and samedoc %}<div class="text-danger"><span id="error">The Doctor for this date and time is unavailable</span></div>{% endif %}"
 
 
             }

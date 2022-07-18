@@ -44,34 +44,34 @@
         <tr>
           <td> {{ info.id }}</td>
           <td>{{info.username}}</td>
-          <td>{{ info.gen }}</td>
+          <td>{{ info.gender }}</td>
           <td>{{ info.email }}</td>
           <td>{{ info.date_joined }}</td>
           <td>{{ info.time }}</td>
 
-          {% if info.doc.lower() == "T"%}
+          {% if info.doc.lower() == "t"%}
           <td>Dr Tan</td>
 
 
-          {% elif info.doc.lower() == "M" %}
+          {% elif info.doc.lower() == "m" %}
           <td>Dr Mok</td>
 
 
-          {% elif info.doc.lower() == "L" %}
+          {% elif info.doc.lower() == "l" %}
 
           <td>Dr Lim</td>
 
           {% endif %}
-          {% if info.doc.lower() == "T"%}
+          {% if info.doc.lower() == "t"%}
 
           <td> Zoom Link</td>
 
-          {% elif info.doc.lower()  == "M" %}
+          {% elif info.doc.lower()  == "m" %}
 
           <td>Zoom Link</td>
 
 
-          {% elif info.doc.lower()  == "L" %}
+          {% elif info.doc.lower()  == "l" %}
 
           <td>Zoom link</td>
 
@@ -80,7 +80,7 @@
 
 
           {% endif %}
-          <td>{{ info.doc }}</td>
+          <td>{{ info.remarks }}</td>
 
           <td><a href="" class="btn btn-warning">Update</a></td>
           <td>
@@ -90,14 +90,17 @@
 
 
 
-            <form action="" method="POST">
 
+
+             <form action="delete_consultation " method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{info.username}}?');">-->
               <!-- Button to Open the Modal -->
               <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                data-bs-target="">
+                data-bs-target="#myModal_{{info.id}}">
                 Delete
               </button>
-              <div class="modal" id="">
+              <div class="modal" id="myModal_{{info.id}}">
                 <div class="modal-dialog">
                   <div class="modal-content">
 
@@ -109,13 +112,15 @@
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                      Are you sure you want to delete {{info.fname}} {{info.lname}}
+                      Are you sure you want to delete {{info.username}}
                     </div>
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
                       <input type="submit" value="Delete" class="btn btn-danger">
+
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
                     </div>
 
 
@@ -123,6 +128,7 @@
                 </div>
               </div>
             </form>
+
           </td>
         </tr>
 
