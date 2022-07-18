@@ -23,6 +23,7 @@
         <div class="col">
             <div class="login-form bg-colour mt-6 p-4" id="feedbackForm">
                 <form action="" method="POST" class="row g-3">
+                    {{ form.csrf_token () }}
                     <div class="col-12">
                         {{ render_field(form.name, class="form-control", placeholder="John Lim") }}
                     </div>
