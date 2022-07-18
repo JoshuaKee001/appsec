@@ -554,6 +554,54 @@ def retrieveConsultation():
 
 
 
+@app.route('/retrieveConsultation', methods=['GET', 'POST'])
+def retrieveConsultation():
+    if current_user.is_authenticated:
+
+        users_dict ={}
+        db = User
+        UserName =  User.username
+        form = createConsultationForm()
+
+        if current_user.is_authenticated:
+
+
+
+            z=0
+            remarks = "Empty"
+            user = current_user
+            i = current_user.id
+            customers_list = User
+            test = user
+            print('test' ,test )
+            empty = " "
+            info = user.query.filter_by(id=user.id).first()
+            if info.consultstate == True:
+                print("All Good ")
+                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=1,  consultactive = True, info = info, form = form )
+
+
+
+            elif info.consultstate == False or info.doc < date.today:
+
+                info.first_name = empty
+                info.last_name = empty
+                info.date_joined = empty
+                info.doc = empty
+                info.time = empty
+                info.remarks = empty
+
+                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=0,  consultactive = False, info = info, form = form )
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+
+    else:
+
+        return redirect(url_for('login'))
+
+
+
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     form = createConsultationForm()
@@ -565,12 +613,15 @@ def create_consultation():
 
       if form.validate_on_submit():
         try:
+
+
             print("hey ")
             appoint.user = id
+            appoint.consultstate = True
             appoint.first_name = form.first_name.data.lower()
             appoint.last_name = form.last_name.data.lower()
             appoint.date_joined = form.date_joined.data
-            appoint.gen = form.gender.data.lower()
+            appoint.gender = form.gender.data.lower()
             appoint.doc = form.doc.data.lower()
             appoint.time = form.time.data.lower()
             appoint.remarks = form.remarks.data.lower()
@@ -587,7 +638,7 @@ def create_consultation():
             print('info',info)
 
 
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', consultactive = True, info = info )
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count =1, consultactive = True, info = info, form = form )
 
         except InvalidRequestError:
             db.session.rollback()
@@ -609,6 +660,34 @@ def create_consultation():
             flash(f"An error occured !", "danger")
     return render_template('user/guest/xuzhi/createConsultation.html', form = form)
 
+@app.route('/delete_consultation', methods=['GET', 'POST'])
+def delete_consultation():
+    if current_user.is_authenticated:
+
+
+      user = current_user
+      id = current_user.id
+      appoint = user
+
+      print("deleting ")
+      empty = " "
+
+      appoint.user = id
+      appoint.consultstate = False
+      appoint.first_name = empty
+      appoint.last_name = empty
+      appoint.date_joined = empty
+      appoint.gender = empty
+      appoint.doc = empty
+      appoint.time = empty
+      appoint.remarks = empty
+
+      db.session.commit()
+      return redirect(url_for('retrieveConsultation' ))
+
+
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/News')
