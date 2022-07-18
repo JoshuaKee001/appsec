@@ -36,7 +36,7 @@ from flask_login import (
 from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
 from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
-    ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity
+    ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm
 from functions import send_password_reset_email
 
 
@@ -482,6 +482,7 @@ def minusprod(id):
         session["cart"] = cart
     return redirect(url_for('cart'))
 
+
 @app.route('/consultatioPg1')
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
@@ -595,10 +596,32 @@ def Vac():
 @app.route('/Background')
 def Background():
     return render_template('user/guest/xuzhi/Background.html')
-@app.route('/help')
-def Help():
-    return render_template('user/guest/Alisa/help.html')
 
+
+@app.route('/help')
+def help():
+    return render_template('user/guest/alisa/help.html')
+
+#feedback form
+@app.route('/feedback', methods=["GET", "POST"])
+def feedback():
+    form = FeedbackForm()
+    if form.validate_on_submit():
+        user = current_user
+        id = current_user.id
+        feedback = user
+
+        feedback.user = id
+        feedback.name = form.name.data.lower()
+        feedback.email = form.email.data.lower()
+        feedback.subject = form.subject.data.lower()
+        feedback.description = form.description.data.lower()
+
+        return redirect(url_for('fb_submit'))
+    else:
+        return render_template('user/guest/alisa/feedback.html', usersession = True, form = form,  contactactive = True)
+
+#need add feedback submit button
 
 
 if __name__ == "__main__":

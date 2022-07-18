@@ -116,3 +116,9 @@ class CreateProductForm(FlaskForm):
 
 class Quantity(FlaskForm):
     quantity = IntegerField("Quantity:", [validators.DataRequired()])
+
+class FeedbackForm(FlaskForm):
+    name = StringField("Name:", [validators.DataRequired()])
+    email = EmailField('Email', [validators.Email(), validators.DataRequired()])
+    subject = SelectField('Subject', [validators.DataRequired()], choices=[('Website Design','Website Design'),('Website Functions','Website Functions'),('General','General'),('Content','Content'),('Copyright','Copyright'),('Others','Others')], default = 'General')
+    description = TextAreaField()
