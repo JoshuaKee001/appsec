@@ -81,6 +81,7 @@ def login():
     return render_template('user/guest/login.html', form=form)
 
 
+
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
     form = SignUpForm()
@@ -89,8 +90,10 @@ def signup():
             username = form.username.data
             email = form.email.data.lower()
             password = form.password.data
+            consultstate = False  
+        
 
-            newuser = User(username=username, email=email, password=bcrypt.generate_password_hash(password))
+            newuser = User(username=username, email=email, password=bcrypt.generate_password_hash(password), consultstate = consultstate)
 
             db.session.add(newuser)
             db.session.commit()
