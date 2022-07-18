@@ -1,7 +1,7 @@
 from wtforms import StringField, PasswordField, BooleanField, IntegerField, DateField, TextAreaField, SelectField, FloatField, EmailField, RadioField
 from wtforms_components import DateRange
 from flask_wtf import FlaskForm
-from wtforms.validators import InputRequired, Length, EqualTo, Email, Regexp, Optional
+from wtforms.validators import InputRequired, Length, EqualTo, Email, Regexp, Optional, NumberRange
 import email_validator
 from flask_login import current_user
 from wtforms import ValidationError, validators
@@ -114,8 +114,18 @@ class CreateProductForm(FlaskForm):
     long_description = TextAreaField("Long Description:", validators=[InputRequired()])
     stock = IntegerField("Stock:", validators=[InputRequired()])
 
+
+class CardInfoForm(FlaskForm):
+    card_name = StringField("Name On Card:", validators=[InputRequired(), Length(max=300)])
+    card_no = IntegerField("Card Number:", validators=[InputRequired()])
+    card_expiry_month = IntegerField("", [validators.NumberRange(min=0, max=12)])
+    card_expiry_year = IntegerField("", [validators.NumberRange(min=0, max=99)])
+    card_CVV = IntegerField("CVV:", [validators.NumberRange(min=0, max=999)])
+
+
 class Quantity(FlaskForm):
     quantity = IntegerField("Quantity:", [validators.DataRequired()])
+
 
 class FeedbackForm(FlaskForm):
     name = StringField("Name:", [validators.DataRequired()])

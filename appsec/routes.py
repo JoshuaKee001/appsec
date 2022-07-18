@@ -36,7 +36,7 @@ from flask_login import (
 from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
 from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
-    ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm
+    ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm
 from functions import send_password_reset_email
 
 
@@ -348,6 +348,41 @@ def delete_account():
         flash(f'Account has been deleted', 'info')
 
         return redirect(url_for('home'))
+
+
+@app.route('/usercard', methods=["GET", "POST"])
+@login_required
+def usercard():
+    form = CardInfoForm()
+    if form.validate_on_submit():
+        user = current_user
+        user.card_name = form.card_name.data
+        user.card_no = form.card_no.data
+        user.card_exp_month = form.card_expiry_month.data
+        user.card_exp_year = form.card_expiry_year.data
+        user.card_CVV = form.card_CVV.data
+
+        db.session.commit()
+        flash(f'card info has been edited', 'info')
+        return redirect(url_for('user'))
+
+    return render_template('user/loggedin/user_cardinfo.html', form=form)
+
+
+@app.route('/deletecard', methods=["GET", "POST"])
+@login_required
+def deletecard():
+    user = current_user
+    user.card_name = None
+    user.card_no = None
+    user.card_exp_month = None
+    user.card_exp_year = None
+    user.card_CVV = None
+
+    db.session.commit()
+    flash(f'card info has been deleted', 'info')
+
+    return redirect(url_for('user'))
 
 
 @app.route('/store', methods=["GET", "POST"])

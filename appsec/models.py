@@ -12,17 +12,23 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(300), nullable=False, unique=True)
+
     role = db.Column(db.String(20))
     age = db.Column(db.String(3))
-    first_name = db.Column(db.String(30), nullable=True)
-    last_name = db.Column(db.String(40), nullable=True)
-    gender = db.Column(db.String(10), nullable=True)
-    date_joined = db.Column(db.String(50), nullable=True)
-    doc = db.Column(db.String(60), nullable=True, unique=False)
-    time = db.Column(db.String(30), nullable=True)
-    remarks = db.Column(db.String(30), nullable=True)
-    consultstate = db.Column(db.Boolean, nullable = True  )
+    first_name = db.Column(db.String(30))
+    last_name = db.Column(db.String(40))
+    gender = db.Column(db.String(10))
+    date_joined = db.Column(db.String(50))
+    doc = db.Column(db.String(60), unique=False)
+    time = db.Column(db.String(30))
+    remarks = db.Column(db.String(30))
+    consultstate = db.Column(db.Boolean)
 
+    card_name = db.Column(db.String(300))
+    card_no = db.Column(db.Integer)
+    card_exp_month = db.Column(db.Integer)
+    card_exp_year = db.Column(db.Integer)
+    card_CVV = db.Column(db.Integer)
 
     def __repr__(self):
         return '<User %r>' % self.username
