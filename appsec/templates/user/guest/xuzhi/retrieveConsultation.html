@@ -29,8 +29,9 @@
 
           <th> ID </th>
           <th>Username</th>
-          <th>Gender</th>
           <th>Email</th>
+          <th>Appointment present?</th>
+          <th>Gender</th>
           <th>Date of appointment</th>
           <th>Time: </th>
           <th>Doctor of choice</th>
@@ -44,8 +45,16 @@
         <tr>
           <td> {{ info.id }}</td>
           <td>{{info.username}}</td>
-          <td>{{ info.gender }}</td>
           <td>{{ info.email }}</td>
+          {% if info.consultstate == True %}
+          <td>Yes</td>
+
+          {% elif info.consultstate == False %}
+          <td>No </td>
+          {% endif %}
+
+          <td></td>
+          <td>{{ info.gender }}</td>
           <td>{{ info.date_joined }}</td>
           <td>{{ info.time }}</td>
 
