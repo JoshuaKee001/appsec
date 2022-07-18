@@ -21,6 +21,7 @@ class User(UserMixin, db.Model):
     doc = db.Column(db.String(60), nullable=True, unique=False)
     time = db.Column(db.String(30), nullable=True)
     remarks = db.Column(db.String(30), nullable=True)
+    consultstate = db.Column(db.Boolean, nullable = True  )
 
 
     def __repr__(self):
