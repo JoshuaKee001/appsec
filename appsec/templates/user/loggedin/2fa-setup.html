@@ -1,0 +1,29 @@
+{% if current_user.role == "admin" %}
+{% extends "admin_base.html" %}
+{% elif current_user.is_authenticated %}
+{% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/useraccount.css">
+{% endblock %}
+{% block title %}2fa-setup | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+
+<h1>Two Factor Authentication Setup</h1>
+<p>Download FreeOTP on your smartphone and scan the following QR Code with it:</p>
+<p><img id="qrcode" src="{{ url_for('qrcode') }}"></p>
+
+{% if current_user.two_factor_enabled %}
+<p>Done? click here to enable 2fa from your next login onwards</p>
+<br>
+<p>Want to disable 2fa? click <a href="/disable_2fa">here</a> instead</p>
+{% else %}
+<p>Done? click <a href="/enable_2fa">here</a> to enable 2fa from your next login onwards</p>
+<br>
+<p>Want to disable 2fa? click here instead</p>
+{% endif %}
+
+{% endblock %}

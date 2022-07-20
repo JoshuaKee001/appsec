@@ -53,33 +53,37 @@
          {# for name in user_list #}
          <div class="card mb-3">
             <div class="card-body">
-               <form action="" method="POST" style="float:left;">
-                  <button type="Submit" class="btn btn-danger" data-bs-toggle="modal"
-                     data-bs-target="#myModal_Verify">Unverified</button>
-                  <div class="modal" id="myModal_Verify">
+                  {% if name.two_factor_enabled %}
+                  <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                     data-bs-target="#myModal_2fa">2fa setup (enabled)</button>
+                  {% else %}
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                     data-bs-target="#myModal_2fa">2fa setup (disabled)</button>
+                  {% endif %}
+                  <div class="modal" id="myModal_2fa">
                      <div class="modal-dialog">
                         <div class="modal-content">
 
                            <!-- Modal Header -->
                            <div class="modal-header">
-                              <h4 class="modal-title">Verification Email Notification</h4>
+                              <h4 class="modal-title">2fa setup</h4>
                               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                            </div>
 
                            <!-- Modal body -->
                            <div class="modal-body">
-                              Verification Email will be sent to registered email! Please wait for a few seconds!
+                              Note: the next page contains sensitive information so make sure no one can see your screen
                            </div>
 
                            <!-- Modal footer -->
                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
+                              <a href="/2fa-setup"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Go to 2fa setup</button></a>
                            </div>
 
                         </div>
                      </div>
                   </div>
-               </form>
+
                {% if changed == True %}
                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal" id="btn"
                   style="display:none;">
@@ -353,9 +357,15 @@
                         <div class="col-sm-3">
                            <h6 class="mb-0">Card Number</h6>
                         </div>
+                        {% if name.card_no == None %}
+                        <div class="col-sm-9 text-secondary">
+                           None
+                        </div>
+                        {% else %}
                         <div class="col-sm-9 text-secondary">
                            ****************
                         </div>
+                        {% endif %}
                      </div>
                      <hr>
                      <div class="row">
@@ -371,9 +381,15 @@
                         <div class="col-sm-3">
                            <h6 class="mb-0">Expiry Date</h6>
                         </div>
+                        {% if name.card_no == None %}
+                        <div class="col-sm-9 text-secondary">
+                           None
+                        </div>
+                        {% else %}
                         <div class="col-sm-9 text-secondary">
                            **/**
                         </div>
+                        {% endif %}
                      </div>
                      <hr>
                      <div class="row">

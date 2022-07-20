@@ -14,6 +14,10 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired(), Length(8, 72)])
 
 
+class Login2Form(FlaskForm):
+    otp = StringField(validators=[InputRequired(), Length(6, 6)])
+
+
 class EmptyForm(FlaskForm):
     fake_field = StringField()
 

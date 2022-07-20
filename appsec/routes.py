@@ -1,6 +1,8 @@
 from hashlib import new
 from sre_constants import CH_LOCALE
 import os
+import pyqrcode
+from io import BytesIO
 from flask import (
     Flask,
     render_template,
@@ -36,7 +38,8 @@ from flask_login import (
 from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
 from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
-    ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm
+    ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
+    Login2Form
 from functions import send_password_reset_email
 
 
@@ -59,7 +62,7 @@ def home():
     return render_template("home.html")
 
 
-@app.route('/login' , methods=["GET", "POST"])
+@app.route('/login', methods=["GET", "POST"])
 @limiter.limit("2/second")
 def login():
     if current_user.is_authenticated:
@@ -71,15 +74,38 @@ def login():
         try:
             user = User.query.filter_by(email=form.email.data.lower()).first()
             if check_password_hash(user.password, form.password.data):
-                login_user(user)
-                return redirect(url_for('home'))
+                if user.two_factor_enabled:
+                    return redirect(url_for('login_2', username=user.username))
+                else:
+                    login_user(user)
+                    return redirect(url_for('home'))
             else:
                 flash("Invalid Username or password!", "danger")
         except Exception as e:
-            flash("Wrong username or password", "danger")
+            flash("Invalid Username or password!", "danger")
 
     return render_template('user/guest/login.html', form=form)
 
+
+@app.route('/login_2/<username>', methods=["GET", "POST"])
+@limiter.limit("2/second")
+def login_2(username):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
+    form = Login2Form()
+    if form.validate_on_submit():
+        try:
+            user = User.query.filter_by(username=username).first()
+            if user.verify_totp(form.otp.data):
+                login_user(user)
+                return redirect(url_for('home'))
+            else:
+                flash('invalid code', 'danger')
+        except Exception as e:
+            flash('invalid code', 'danger')
+
+    return render_template('user/guest/login2.html', form=form)
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -135,6 +161,46 @@ def user():
     form = EmptyForm()
 
     return render_template('user/loggedin/useraccount.html', name=current_user, form=form)
+
+
+@app.route('/enable_2fa', methods=["GET", "POST"])
+@login_required
+def enable_2fa():
+    user = current_user
+    user.two_factor_enabled = True
+
+    db.session.commit()
+    flash(f'2fa has been enabled', 'success')
+
+    return redirect(url_for('user'))
+
+
+@app.route('/disable_2fa', methods=["GET", "POST"])
+@login_required
+def disable_2fa():
+    user = current_user
+    user.two_factor_enabled = False
+
+    db.session.commit()
+    flash(f'2fa has been disabled', 'info')
+
+    return redirect(url_for('user'))
+
+
+@app.route('/2fa-setup', methods=['GET', 'POST'])
+@login_required
+def twofactor_setup():
+    return render_template('user/loggedin/2fa-setup.html')
+
+
+@app.route('/qrcode', methods=["GET", "POST"])
+@login_required
+def qrcode():
+    user = current_user
+    url = pyqrcode.create(user.get_totp_uri())
+    stream = BytesIO()
+    url.svg(stream, scale=5)
+    return stream.getvalue()
 
 
 @app.route('/change_password', methods=["GET", "POST"])
@@ -553,7 +619,7 @@ def retrieveConsultation():
         return redirect(url_for('login'))
 
 
-
+"""
 @app.route('/retrieveConsultation', methods=['GET', 'POST'])
 def retrieveConsultation():
     if current_user.is_authenticated:
@@ -599,7 +665,7 @@ def retrieveConsultation():
     else:
 
         return redirect(url_for('login'))
-
+"""
 
 
 @app.route('/createConsultation', methods=['GET', 'POST'])
