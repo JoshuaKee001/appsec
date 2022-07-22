@@ -36,7 +36,7 @@ csrf = CSRFProtect()
 def create_app():
     app = Flask(__name__)
 
-    app.secret_key = os.environ['secret_key']
+    app.secret_key = os.getenv('secret_key')
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     app.config['MAIL_SERVER'] = 'smtp.mailtrap.io'

@@ -74,11 +74,14 @@ def login():
         try:
             user = User.query.filter_by(email=form.email.data.lower()).first()
             if check_password_hash(user.password, form.password.data):
-                if user.two_factor_enabled:
-                    return redirect(url_for('login_2', username=user.username))
+                if not user.banned:
+                    if user.two_factor_enabled:
+                        return redirect(url_for('login_2', username=user.username))
+                    else:
+                        login_user(user)
+                        return redirect(url_for('home'))
                 else:
-                    login_user(user)
-                    return redirect(url_for('home'))
+                    flash("User has been banned", 'danger')
             else:
                 flash("Invalid Username or password!", "danger")
         except Exception as e:
@@ -420,6 +423,20 @@ def staffaccountlist(page=1):
 @required_roles('admin')
 def stafflist(page=1):
     return render_template('user/staff/stafflist.html')
+
+
+@app.route('/banUser/<id>', methods=['GET', 'POST'])
+@login_required
+@required_roles('admin')
+def banUser(id):
+    pass
+
+
+@app.route('/unbanUser/<id>', methods=['GET', 'POST'])
+@login_required
+@required_roles('admin')
+def unbanUser(id):
+    pass
 
 
 @app.route('/delete_account', methods=["GET", "POST"])

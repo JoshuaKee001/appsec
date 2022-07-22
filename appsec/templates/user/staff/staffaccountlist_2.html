@@ -143,7 +143,7 @@
             <div class="row table-responsive">
               <table class="table table-striped">
                 <!--thead class="table-dark"-->
-                {% if 1 == 1 %} <!-- if user.get_verified() -->
+                {% if 1 == 2 %} <!-- if user.get_verified() -->
                 <thead class="table-success">
                   {% else %}
                   <thead class="table-dark">
@@ -230,8 +230,8 @@
                   </div>
                 </form>
 
-                {% if 1==2 %} <!-- if user.get_verified() == False -->
-                <form action="{{ url_for('verifyEmail', id=user.id) }}" method="POST" style="width:400px;">
+                {% if 1==1 %} <!-- if user.get_verified() == False -->
+                <form action="{# url_for('verifyEmail', id=user.id) #}" method="POST" style="width:400px;">
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                     data-bs-target="#myModal_verify_{{ user.id }}">
                     Send Verification Email

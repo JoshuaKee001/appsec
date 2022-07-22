@@ -41,6 +41,9 @@ class User(UserMixin, db.Model):
     card_exp_year = db.Column(db.Integer)
     card_CVV = db.Column(db.Integer)
 
+    banned = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+    verified = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
+
     def __repr__(self):
         return '<User %r>' % self.username
 
