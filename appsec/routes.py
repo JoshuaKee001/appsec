@@ -39,7 +39,7 @@ from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, requi
 from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
-    Login2Form
+    Login2Form, FiltersAndSorting, AccountListSearchForm
 from functions import send_password_reset_email
 
 
@@ -405,6 +405,23 @@ def edit_product():
     return render_template('user/staff/joshua/StaffInventory/CRUDProducts/edit_product.html', product=product, form=form)
 
 
+@app.route('/staffaccountlist/<int:page>', methods=["GET", "POST"])  # list member accounts
+@login_required
+@required_roles('admin')
+def staffaccountlist(page=1):
+    form = AccountListSearchForm()
+    user_list = User.query.filter_by(role=None).all()
+
+    return render_template('user/staff/staffaccountlist_2.html', form=form, user_list=user_list, page=page)
+
+
+@app.route('/stafflist/<int:page>', methods=["GET", "POST"])  # list staff accounts
+@login_required
+@required_roles('admin')
+def stafflist(page=1):
+    return render_template('user/staff/stafflist.html')
+
+
 @app.route('/delete_account', methods=["GET", "POST"])
 @login_required
 def delete_account():
@@ -459,9 +476,22 @@ def store():
     return render_template('user/guest/joshua/GuestStore/store.html', products=products)
 
 
-@app.route('/search', methods=["GET","POST"])
+@app.route('/search', methods=["GET", "POST"])
 def search():
-    pass
+    query = request.args.get('query')
+    page = request.args.get('page', 1, type=int)
+    form = FiltersAndSorting()
+
+    if query:
+        products = Product.query.filter(Product.name.contains(query) |
+                                        Product.short_description.contains(query) |
+                                        Product.long_description.contains(query) |
+                                        Product.category.contains(query)).paginate(page=page, per_page=8)
+    else:
+        products = Product.query.paginate(page=page, per_page=8)
+
+    return render_template('user/guest/joshua/GuestStore/search.html', products=products, form=form)
+
 
 @app.route('/view_product', methods=["GET", "POST"])
 def view_product():

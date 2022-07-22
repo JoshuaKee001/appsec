@@ -1,4 +1,5 @@
-from wtforms import StringField, PasswordField, BooleanField, IntegerField, DateField, TextAreaField, SelectField, FloatField, EmailField, RadioField
+from wtforms import StringField, PasswordField, BooleanField, IntegerField, DateField, \
+    TextAreaField, SelectField, FloatField, EmailField, RadioField, SubmitField
 from wtforms_components import DateRange
 from flask_wtf import FlaskForm
 from wtforms.validators import InputRequired, Length, EqualTo, Email, Regexp, Optional, NumberRange
@@ -136,3 +137,23 @@ class FeedbackForm(FlaskForm):
     email = EmailField('Email', [validators.Email(), validators.DataRequired()])
     subject = SelectField('Subject', [validators.DataRequired()], choices=[('Website Design','Website Design'),('Website Functions','Website Functions'),('General','General'),('Content','Content'),('Copyright','Copyright'),('Others','Others')], default = 'General')
     description = TextAreaField()
+
+
+class FiltersAndSorting(FlaskForm):
+    Medicine_category = BooleanField("Medicine")
+    TestKit_category = BooleanField("Test Kit")
+    Supplement_category = BooleanField("Supplement")
+    FirstAid_category = BooleanField("First Aid")
+
+    sorting_methods = [('Price (Descending)', 'Price (Descending)'), ('Price (Ascending)', 'Price (Ascending)'),
+                       ('Name (A to Z)', 'Name (A to Z)')]
+    sort_by = SelectField(u'Sort By', choices=sorting_methods)
+
+    price_range_lower = FloatField("From($)")
+    price_range_upper = FloatField("To($):")
+
+    apply_filters = SubmitField("Apply Filters")
+
+
+class AccountListSearchForm(FlaskForm):
+    search = StringField("")

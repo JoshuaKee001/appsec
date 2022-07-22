@@ -1,6 +1,6 @@
-{% if staffsession %}
+{% if current_user.role == "admin" %}
 {% extends "admin_base.html" %}
-{% elif usersession %}
+{% elif current_user.is_authenticated %}
 {% extends "user_base.html" %}
 {% else %}
 {% extends "default_base.html" %}
@@ -32,6 +32,9 @@
                     </div>
 
                     <form action="", method="POST">
+
+                        {{ form.csrf_token }}
+
                         <div class="d-flex justify-content-between mt-2">
                             <div class="form-check">
                                 {{ render_field(form.Medicine_category, class="form-check-input") }}
