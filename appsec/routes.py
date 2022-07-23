@@ -422,7 +422,10 @@ def staffaccountlist(page=1):
 @login_required
 @required_roles('admin')
 def stafflist(page=1):
-    return render_template('user/staff/stafflist.html')
+    form = AccountListSearchForm()
+    staff_list = User.query.filter_by(role='admin').all()
+
+    return render_template('user/staff/stafflist2.html', form=form, staff_list=staff_list, page=page)
 
 
 @app.route('/banUser/<id>', methods=['GET', 'POST'])

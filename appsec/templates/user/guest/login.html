@@ -36,12 +36,6 @@
                             <input type="text" name="email" class="form-control" placeholder="Email"-->
                     </div>
 
-                    {% for error in form.email.errors %}
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        {{ error }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor%}
 
                     <div class="col-12">
                         {{ render_field(form.password, class="form-control") }}
@@ -49,12 +43,14 @@
                             <input type="password" name="password" class="form-control" placeholder="Password"-->
                     </div>
 
-                    {% for error in form.password.errors %}
+                    <!--
+                    {# for error in form.password.errors #}
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         {{ error }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    {% endfor%}
+                    {# endfor #}
+                    -->
 
                     <div class="col-12">
                         <button type="submit" class="btn btn-dark float-end">Login</button>
