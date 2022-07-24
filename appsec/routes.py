@@ -642,14 +642,40 @@ def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
 
 
-@app.route('/retrieveConsultation')
+@app.route('/retrieveConsultation', methods=['GET', 'POST'])
 def retrieveConsultation():
     if current_user.is_authenticated:
 
         users_dict ={}
         db = User
         UserName =  User.username
-        if current_user.is_authenticated:
+        form = createConsultationForm()
+        if current_user.role == 'admin':
+          print('placeholder')
+
+
+          z=0
+          remarks = "Empty"
+          user = current_user
+          i = current_user.id
+          customers_list = User
+          test = user
+          print('test' ,test )
+          empty = " "
+          consultation = user.query.all()
+
+
+
+
+          return render_template('user/guest/xuzhi/retrieveConsultationAd.html',form = form, consultation = consultation)
+
+
+
+
+        elif current_user.is_authenticated:
+
+
+
             z=0
             remarks = "Empty"
             user = current_user
@@ -657,12 +683,30 @@ def retrieveConsultation():
             customers_list = User
             test = user
             print('test' ,test )
+            empty = " "
             info = user.query.filter_by(id=user.id).first()
+            if info.consultstate == True:
+                print("All Good ")
+                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=1,  consultactive = True, info = info, form = form )
 
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=z,  consultactive = True, info = info  )
+
+
+            elif info.consultstate == False:
+
+                info.first_name = empty
+                info.last_name = empty
+                info.date_joined = empty
+                info.doc = empty
+                info.time = empty
+                info.remarks = empty
+
+                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=0,  consultactive = True, info = info, form = form )
         else:
             session.clear()
+
+
             return redirect(url_for('home'))
+
 
     else:
 
