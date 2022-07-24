@@ -20,6 +20,18 @@
     {% else %}
     <p>You have {{ count }} appointments.</p>
     {% endif %}
+  </div>{% if form.errors %}
+{{ form.errors }}
+{% endif %}
+  <div>
+    {% if form.errors %}
+{{ form.errors }}
+{% endif %}
+
+  </div>
+  <div>
+
+
   </div>
 
   <div class="table-responsive">
@@ -53,7 +65,6 @@
           <td>No </td>
           {% endif %}
 
-          <td></td>
           <td>{{ info.gender }}</td>
           <td>{{ info.date_joined }}</td>
           <td>{{ info.time }}</td>
