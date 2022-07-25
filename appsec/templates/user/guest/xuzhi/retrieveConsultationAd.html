@@ -52,7 +52,44 @@
           <td>{{ consult.gender }}</td>
           <td>{{ consult.date_joined }}</td>
           <td>{{ consult.time }}</td>
-          <td>{{ consult.doc }}</td>
+
+          {% if consult.doc == "t"%}
+          <td>Dr Tan</td>
+
+
+          {% elif consult.doc == "m" %}
+          <td>Dr Mok</td>
+
+
+          {% elif consult.doc == "l" %}
+
+          <td>Dr Lim</td>
+
+          {% else %}
+          <td>none </td>
+
+          {% endif %}
+          {% if consult.doc == "t"%}
+
+          <td> Zoom Link</td>
+
+          {% elif consult.doc  == "m" %}
+
+          <td>Zoom Link</td>
+
+
+          {% elif consult.doc  == "l" %}
+
+          <td>Zoom link</td>
+
+          {% else %}
+          <td>none </td>
+
+          {% endif %}
+
+
+
+
           <td>{{ consult.remarks }}</td>
 
 
@@ -119,5 +156,6 @@
   </div>
     {% endblock %}
 </div>
+
 
 
