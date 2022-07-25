@@ -15,18 +15,7 @@
   }
 </style>
 <h1 class="display-4"> Shown appointments </h1>
-<div class="centralisation" style="height:50vh;">
 
-  <div>
-    {% if count == 0 %}
-    <p>You Have no appointments.</p>
-    {% elif count == 1 %}
-    <p>You have 1 appointment.</p>
-    {% else %}
-    <p>You have {{ count }} appointments.</p>
-    {% endif %}
-  </div>
-  </div>
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>
@@ -66,7 +55,7 @@
           <td>{{ consult.doc }}</td>
           <td>{{ consult.remarks }}</td>
 
-          {% endfor %}
+
 
           <td><a href="" class="btn btn-warning">Update</a></td>
           <td>
@@ -117,6 +106,7 @@
 
           </td>
         </tr>
+      {% endfor %}
 
 
 
@@ -129,4 +119,5 @@
   </div>
     {% endblock %}
 </div>
+
 
