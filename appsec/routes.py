@@ -849,6 +849,44 @@ def delete_consultation():
     else:
         return redirect(url_for('login'))
 
+@app.post('/<int:user_id>/delete/')
+def delete_consultationAd(user_id):
+    n = user_id
+
+
+
+    if current_user.role == 'admin':
+     if current_user.is_authenticated:
+
+
+
+      appoint = User.query.get_or_404(n)
+      id = appoint.id
+
+      print("deleting ")
+      empty = " "
+
+      appoint.user = id
+      appoint.consultstate = False
+      appoint.first_name = empty
+      appoint.last_name = empty
+      appoint.date_joined = empty
+      appoint.gender = empty
+      appoint.doc = empty
+      appoint.time = empty
+      appoint.remarks = empty
+
+      db.session.commit()
+      return redirect(url_for('retrieveConsultation' ))
+
+     else:
+         return redirect(url_for('login'))
+
+
+    else:
+        return redirect(url_for('login'))
+
+
 
 @app.route('/News')
 def news():
