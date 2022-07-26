@@ -80,3 +80,22 @@ class Product(db.Model):
     short_description = db.Column(db.String(100))
     long_description = db.Column(db.String(3000))
     stock = db.Column(db.Integer)
+    
+    
+    
+class graph(db.Model):
+    __tablename__ = 'graph'
+
+    id = db.Column(db.Integer, primary_key=True)
+    DATE1 = db.Column(db.String(30), nullable=True)
+    DATE2 = db.Column(db.String(30), nullable=True)
+    DATE3 = db.Column(db.String(30), nullable=True)
+    DATE4 = db.Column(db.String(30), nullable=True)
+    DATE5 = db.Column(db.String(30), nullable=True)
+    COVID1 = db.Column(db.Integer, nullable = True)
+    COVID2 = db.Column(db.Integer, nullable = True)
+    COVID3 = db.Column(db.Integer, nullable = True)
+    COVID4 = db.Column(db.Integer, nullable = True)
+    COVID5 = db.Column(db.Integer, nullable = True)
+
+
