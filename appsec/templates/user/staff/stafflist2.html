@@ -85,7 +85,7 @@
           <div class="text-danger"><span id="error">Staff Member cannot be editted because he/she no longer exists in our database!</span></div>
           {% endif %}
           <div id="Appointments">
-            {% if empty == False %}
+            {% if staff_list %}
             {% for staff in staff_list %}
             <div class="row table-responsive">
               <table class="table table-striped">
@@ -97,10 +97,9 @@
                 </thead>
                 <tbody>
                   <td style="font-weight: bold;">
-                    <span id=sample_{{staff.get_staff_id()}}>{{ staff.get_staff_id() }}</span><br>
+                    <span id=sample_{{staff.get_staff_id()}}>{{ staff.id }}</span><br>
                     <button id="copybutton" type="button" class="btn btn-secondary" onclick="CopyToClipboard('sample_{{staff.get_staff_id()}}');return false;">Copy</button></td>
-                  <td style="font-weight: bold;">{{ staff.get_username() }}</td>
-                  <td style="font-weight: bold;">{{ staff.get_email() }}</td>
+                  <td style="font-weight: bold;">{{ staff.username }}</td>
                   <td><a class="btn btn-warning" href="/staffupdate/{{ staff.get_staff_id() }}">Edit</a></td>
                 </tbody>
               </table>

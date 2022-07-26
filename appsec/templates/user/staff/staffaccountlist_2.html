@@ -76,9 +76,22 @@
             {{ render_field(form.search, class="form-control me-2", placeholder="Search...") }}
             <button class="btn btn-info" type="submit">Search</button>
           </form>
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+          {% if messages %}
+          {% for category, message in messages %}
+          <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+          {% endif %}
+          {% endwith %}
+
           <div id="Appointments">
             {% for user in user_list %}
-            {% if 1 == 2 %} <!-- if user.get_ban_status == True -->
+            {% if user.banned %} <!-- if user.get_ban_status == True -->
             <div class="row table-responsive">
               <table class="table table-striped">
                 <thead class="table-danger">
@@ -101,6 +114,7 @@
                          </div-->
               <div class="col">
                 <form action="{{ url_for('unbanUser', id=user.id) }}" method="POST">
+                  {{ form.csrf_token }}
                   <!--input type="submit" value="Delete" class="btn btn-danger"-->
 
                   <!-- w3 schools modal button-->
@@ -143,7 +157,7 @@
             <div class="row table-responsive">
               <table class="table table-striped">
                 <!--thead class="table-dark"-->
-                {% if 1 == 2 %} <!-- if user.get_verified() -->
+                {% if user.verified %} <!-- if user.get_verified() -->
                 <thead class="table-success">
                   {% else %}
                   <thead class="table-dark">
@@ -162,7 +176,8 @@
             </div>
             <div class="row">
               <!--div class="col"-->
-                <form action="{# url_for('banUser', id=user.id) #}" method="POST" style="width:55px;">
+                <form action="{{ url_for('banUser', id=user.id) }}" method="POST" style="width:55px;">
+                  {{ form.csrf_token }}
                   <!--input type="submit" value="Delete" class="btn btn-danger"-->
 
                   <!-- w3 schools modal button-->
@@ -230,7 +245,7 @@
                   </div>
                 </form>
 
-                {% if 1==1 %} <!-- if user.get_verified() == False -->
+                {% if not user.verified %} <!-- if user.get_verified() == False -->
                 <form action="{# url_for('verifyEmail', id=user.id) #}" method="POST" style="width:400px;">
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                     data-bs-target="#myModal_verify_{{ user.id }}">

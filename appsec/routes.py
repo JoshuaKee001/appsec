@@ -40,7 +40,7 @@ from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
     Login2Form, FiltersAndSorting, AccountListSearchForm
-from functions import send_password_reset_email
+from functions import send_password_reset_email, send_ban_email, send_unban_email
 
 
 @login_manager.user_loader
@@ -432,14 +432,28 @@ def stafflist(page=1):
 @login_required
 @required_roles('admin')
 def banUser(id):
-    pass
+    user = User.query.filter_by(id=id).first()
+    user.banned = True
+    db.session.commit()
+
+    send_ban_email(user)
+    flash(f'user %s has been banned' % user.username, 'info')
+
+    return redirect(url_for("staffaccountlist", page=1))
 
 
 @app.route('/unbanUser/<id>', methods=['GET', 'POST'])
 @login_required
 @required_roles('admin')
 def unbanUser(id):
-    pass
+    user = User.query.filter_by(id=id).first()
+    user.banned = False
+    db.session.commit()
+
+    send_unban_email(user)
+    flash(f'user %s has been unbanned' % user.username, 'info')
+
+    return redirect(url_for("staffaccountlist", page=1))
 
 
 @app.route('/delete_account', methods=["GET", "POST"])

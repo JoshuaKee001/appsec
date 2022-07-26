@@ -14,3 +14,25 @@ def send_password_reset_email(user):
     msg.html = render_template('user/guest/reset_email.html', user=user, token=token)
 
     mail.send(msg)
+
+
+def send_ban_email(user):
+    msg = Message()
+    msg.subject = "Ban alert"
+    msg.sender = os.getenv('MAIL_USERNAME')
+    message = "Dear %s! You have been banned from DoctorOnTheGo. Do contact one of our staff if you feel this was an unfair ban. Have a nice day!" % user.username
+    msg.body = message
+    msg.recipients = [user.email]
+
+    mail.send(msg)
+
+
+def send_unban_email(user):
+    msg = Message()
+    msg.subject = "Unban alert"
+    msg.sender = os.getenv('MAIL_USERNAME')
+    message = "Dear %s! You have been unbanned from DoctorOnTheGo. We apologise for the inconvenience. Have a nice day!" % user.username
+    msg.body = message
+    msg.recipients = [user.email]
+
+    mail.send(msg)
