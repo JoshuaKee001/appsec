@@ -9,7 +9,6 @@ import os
 from flask_jwt_extended import JWTManager
 from functools import wraps
 from flask_wtf.csrf import CSRFProtect
-from Crypto.PublicKey import RSA
 from flask_login import (
     UserMixin,
     login_user,
@@ -31,8 +30,6 @@ limiter = Limiter(key_func=get_remote_address)
 mail = Mail()
 jwt = JWTManager()
 csrf = CSRFProtect()
-public_key = RSA.import_key(open('public_key.pem').read())
-private_key = RSA.import_key(open('private_key.pem').read())
 
 
 def create_app():

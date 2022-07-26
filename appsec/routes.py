@@ -35,7 +35,7 @@ from flask_login import (
     login_required,
 )
 
-from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles, public_key, private_key
+from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
 from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
