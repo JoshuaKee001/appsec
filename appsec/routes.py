@@ -35,12 +35,13 @@ from flask_login import (
     login_required,
 )
 
-from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
+from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles, public_key, private_key
 from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
     Login2Form, FiltersAndSorting, AccountListSearchForm
-from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email
+from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email, \
+    encrypt, decrypt
 
 
 @login_manager.user_loader
@@ -496,6 +497,15 @@ def delete_account():
 @login_required
 def usercard():
     form = CardInfoForm()
+
+    if request.method == 'GET':
+        user = current_user
+        form.card_name.data = user.card_name
+        form.card_no.data = user.card_no
+        form.card_expiry_month.data = user.card_exp_month
+        form.card_expiry_year.data = user.card_exp_year
+        form.card_CVV.data = user.card_CVV
+
     if form.validate_on_submit():
         user = current_user
         user.card_name = form.card_name.data
@@ -981,4 +991,4 @@ def fb_submit():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, ssl_context=('server.crt', 'server.key'))
