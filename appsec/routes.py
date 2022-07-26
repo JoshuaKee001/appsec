@@ -689,8 +689,6 @@ def minusprod(id):
 @app.route('/consultatioPg1')
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
-
-
 @app.route('/retrieveConsultation', methods=['GET', 'POST'])
 def retrieveConsultation():
     if current_user.is_authenticated:
@@ -712,11 +710,18 @@ def retrieveConsultation():
           print('test' ,test )
           empty = " "
           consultation = user.query.all()
+          f = []
+          L = []
+          for i in consultation:
+              f.append(i.first_name)
+              L.append(i.last_name)
 
 
 
 
-          return render_template('user/guest/xuzhi/retrieveConsultationAd.html',form = form, consultation = consultation)
+
+
+          return render_template('user/guest/xuzhi/retrieveConsultationAd.html',form = form, consultation = consultation, flist = f, llist = L)
 
 
 
@@ -762,55 +767,7 @@ def retrieveConsultation():
         return redirect(url_for('login'))
 
 
-"""
-@app.route('/retrieveConsultation', methods=['GET', 'POST'])
-def retrieveConsultation():
-    if current_user.is_authenticated:
-
-        users_dict ={}
-        db = User
-        UserName =  User.username
-        form = createConsultationForm()
-
-        if current_user.is_authenticated:
-
-
-
-            z=0
-            remarks = "Empty"
-            user = current_user
-            i = current_user.id
-            customers_list = User
-            test = user
-            print('test' ,test )
-            empty = " "
-            info = user.query.filter_by(id=user.id).first()
-            if info.consultstate == True:
-                print("All Good ")
-                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=1,  consultactive = True, info = info, form = form )
-
-
-
-            elif info.consultstate == False or info.doc < date.today:
-
-                info.first_name = empty
-                info.last_name = empty
-                info.date_joined = empty
-                info.doc = empty
-                info.time = empty
-                info.remarks = empty
-
-                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=0,  consultactive = False, info = info, form = form )
-        else:
-            session.clear()
-            return redirect(url_for('home'))
-
-    else:
-
-        return redirect(url_for('login'))
-"""
-
-
+'''shift down FOR  down '''
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     form = createConsultationForm()
@@ -820,57 +777,111 @@ def create_consultation():
       id = current_user.id
       appoint = user
 
-      if form.validate_on_submit():
-        try:
+
+      all = user.query.all()
 
 
-            print("hey ")
-            appoint.user = id
-            appoint.consultstate = True
-            appoint.first_name = form.first_name.data.lower()
-            appoint.last_name = form.last_name.data.lower()
-            appoint.date_joined = form.date_joined.data
-            appoint.gender = form.gender.data.lower()
-            appoint.doc = form.doc.data.lower()
-            appoint.time = form.time.data.lower()
-            appoint.remarks = form.remarks.data.lower()
+      print(str(form.date_joined.data))
 
 
-            db.session.commit()
-
-            i = current_user.id
+      if form.validate_on_submit()  :
 
 
-
-            info = user.query.filter_by(first_name=form.first_name.data.lower()).first()
-            print(i)
-            print('info',info)
+          try:
+            appointment = False
 
 
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', count =1, consultactive = True, info = info, form = form )
+            all = user.query.all()
+            for i in all:
 
-        except InvalidRequestError:
+
+              print("form " + str(form.date_joined.data))
+              print("database " + str(i.date_joined))
+
+              if str(i.date_joined) == str(form.date_joined.data):
+                samedate = True
+                print('SAMEDATE')
+                print("baseddoc" + str(i.doc))
+
+
+                if str(i.doc) == str(form.doc.data):
+                  samedoc = True
+                  print("SAMEDOC")
+
+
+                  if str(i.time) == str(form.time.data):
+                      sametime = True
+                      faliure = True
+                      print("FALURE")
+                      appointment = False
+
+                  else:
+                      appointment = True
+                else:
+                  appointment = True
+              else:
+
+                appointment = True
+
+            if appointment == True:
+              print("hey ")
+              appoint.user = id
+              appoint.consultstate = True
+              appoint.first_name = form.first_name.data.lower()
+              appoint.last_name = form.last_name.data.lower()
+              appoint.date_joined = form.date_joined.data
+              appoint.gender = form.gender.data.lower()
+              appoint.doc = form.doc.data.lower()
+              appoint.time = form.time.data.lower()
+              appoint.remarks = form.remarks.data.lower()
+
+
+              db.session.commit()
+
+              i = current_user.id
+
+
+
+              info = user.query.filter_by(first_name=form.first_name.data.lower()).first()
+              print(i)
+              print('info',info)
+
+
+              return render_template('user/guest/xuzhi/retrieveConsultation.html', count =1, consultactive = True, info = info, form = form )
+            else:
+              return render_template('user/guest/xuzhi/ErrorDate.html', timelistval = str(form.time.data), datelistval = str(form.date_joined.data) )
+
+
+          except InvalidRequestError:
             db.session.rollback()
             flash(f"Something went wrong!", "danger")
-        except IntegrityError:
+          except IntegrityError:
             db.session.rollback()
             flash(f"User already exists!.", "warning")
-        except DataError:
+          except DataError:
             db.session.rollback()
             flash(f"Invalid Entry", "warning")
-        except InterfaceError:
+          except InterfaceError:
             db.session.rollback()
             flash(f"Error connecting to the database", "danger")
-        except DatabaseError:
+          except DatabaseError:
             db.session.rollback()
             flash(f"Error connecting to the database", "danger")
-        except BuildError:
+          except BuildError:
             db.session.rollback()
             flash(f"An error occured !", "danger")
-    return render_template('user/guest/xuzhi/createConsultation.html', form = form)
+
+      return render_template('user/guest/xuzhi/createConsultation.html', form = form)
+
+
 
 @app.route('/delete_consultation', methods=['GET', 'POST'])
 def delete_consultation():
+
+
+
+
+
     if current_user.is_authenticated:
 
 
@@ -897,6 +908,7 @@ def delete_consultation():
 
     else:
         return redirect(url_for('login'))
+
 
 @app.post('/<int:user_id>/delete/')
 def delete_consultationAd(user_id):
@@ -934,7 +946,6 @@ def delete_consultationAd(user_id):
 
     else:
         return redirect(url_for('login'))
-
 
 
 @app.route('/News')
