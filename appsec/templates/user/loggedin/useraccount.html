@@ -144,11 +144,47 @@
                      </div>
                   </div>
                </form>
+               <form action="{{ url_for('verifyEmail', id=name.id) }}" method="POST" style="float:right;">
+
+                  {{ form.csrf_token }}
+
+                  {% if not name.verified %}
+                  <button type="submit" class="btn btn-danger" data-bs-toggle="modal"
+                     data-bs-target="#myModal_verify" style="margin-right:10px;">Unverified</button>
+                  {% elif name.verified %}
+                  <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                     data-bs-target="#myModal_veried" style="margin-right:10px;">Verified</button>
+                  {% endif %}
+                  <div class="modal" id="myModal_verify">
+                     <div class="modal-dialog">
+                        <div class="modal-content">
+
+                           <!-- Modal Header -->
+                           <div class="modal-header">
+                              <h4 class="modal-title">Email Verification</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                           </div>
+
+                           <!-- Modal body -->
+                           <div class="modal-body">
+                              Email Verification has been sent
+                           </div>
+
+                           <!-- Modal footer -->
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary"
+                                 data-bs-dismiss="modal">Dismiss</button>
+                           </div>
+
+                        </div>
+                     </div>
+                  </div>
+               </form>
                <br style="clear:both;">
                <div class="d-flex flex-column align-items-center text-center">
-                  <img src="{{ av }}" alt="Admin" class="rounded-circle" width="150" height="150">
+                  <img src="{{ av }}" class="rounded-circle" width="150" height="150">
                   <div class="mt-3">
-                     <h4>{{ name.usename }}</h4>
+                     <h4>{{ name.username }}</h4>
                   </div>
                   <form action="/uploadProfilePic" method="POST" enctype="multipart/form-data">
                      <input type="file" id="myFile" name="profilePic">

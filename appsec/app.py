@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, url_for
+from flask import Flask, flash, redirect, url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
@@ -67,8 +67,7 @@ def required_roles(*roles):
         @wraps(f)
         def wrapped(*args, **kwargs):
             if current_user.role not in roles:
-                flash(f"Authentication error, not correct role", "danger")
-                return redirect(url_for('home'))
+                return render_template('errors/error401.html'), 401
             return f(*args, **kwargs)
         return wrapped
     return wrapper

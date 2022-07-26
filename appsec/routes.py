@@ -40,7 +40,7 @@ from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
     Login2Form, FiltersAndSorting, AccountListSearchForm
-from functions import send_password_reset_email, send_ban_email, send_unban_email
+from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email
 
 
 @login_manager.user_loader
@@ -321,6 +321,31 @@ def reset_password(token):
                 flash(f"An error occured !", "danger")
 
     return render_template('/user/guest/passwordreset.html', form=form, user=user)
+
+
+@app.route('/verifyEmail/<id>', methods=['GET', "POST"])
+@login_required
+def verifyEmail(id):
+    user = User.query.filter_by(id=id).first()
+
+    if user:
+        send_verification_email(user)
+    else:
+        pass
+
+    flash(f'email verification email sent', 'info')
+    return redirect(url_for('user'))
+
+
+@app.route('/emailVerification/<token>', methods=['GET', "POST"])
+def emailVerification(token):
+    user = User.verify_reset_token(token)
+
+    if user:
+        user.verified = True
+        db.session.commit()
+        flash(f'email has been verified', 'success')
+        return redirect(url_for('home'))
 
 
 @app.route('/staffinvent/<int:page>', methods=["GET", "POST"])

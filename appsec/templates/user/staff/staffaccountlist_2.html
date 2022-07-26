@@ -214,39 +214,10 @@
 
                 </form>
                 
-                <form action="{# url_for('resetPassUser', id=user.id) #}" method="POST"style="width:200px;">
-                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                    data-bs-target="#myModal_password_{{ user.id }}">
-                    Reset Password
-                  </button>
-                  <div class="modal" id="myModal_password_{{ user.id }}">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
 
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                          <h4 class="modal-title">Reset Password Confirmation</h4>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                          Do you want to reset and send a Temporary password to {{ user.username }}
-                        </div>
-
-                        <!-- Modal footer -->
-                        <div class="modal-footer">
-                          <input type="submit" value="Reset" class="btn btn-danger">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </form>
 
                 {% if not user.verified %} <!-- if user.get_verified() == False -->
-                <form action="{# url_for('verifyEmail', id=user.id) #}" method="POST" style="width:400px;">
+                <form action="{{ url_for('verifyEmail', id=user.id) }}" method="POST" style="width:400px;">
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                     data-bs-target="#myModal_verify_{{ user.id }}">
                     Send Verification Email

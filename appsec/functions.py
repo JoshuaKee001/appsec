@@ -36,3 +36,15 @@ def send_unban_email(user):
     msg.recipients = [user.email]
 
     mail.send(msg)
+
+
+def send_verification_email(user):
+    token = user.get_reset_token()
+
+    msg = Message()
+    msg.subject = "Email verification"
+    msg.sender = os.getenv('MAIL_USERNAME')
+    msg.recipients = [user.email]
+    msg.html = render_template('user/guest/verify_email.html', user=user, token=token)
+
+    mail.send(msg)
