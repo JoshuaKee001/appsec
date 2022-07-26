@@ -104,15 +104,16 @@
 
 
 
-             <form action="delete_consultation " method="POST">
+                     <form method="POST"
+                action="{{ url_for('delete_consultationAd', user_id = consult.id) }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-              <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{consultation.username}}?');">-->
+              <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{consult.username}}?');">-->
               <!-- Button to Open the Modal -->
               <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                data-bs-target="#myModal_{{consultation.id}}">
+                data-bs-target="#myModal_{{consult.id}}">
                 Delete
               </button>
-              <div class="modal" id="myModal_{{consultation.id}}">
+              <div class="modal" id="myModal_{{consult.id}}">
                 <div class="modal-dialog">
                   <div class="modal-content">
 
@@ -124,7 +125,7 @@
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                      Are you sure you want to delete {{consultation.username}}
+                      Are you sure you want to delete {{consult.username}} appointment
                     </div>
 
                     <!-- Modal footer -->
@@ -141,6 +142,7 @@
               </div>
             </form>
 
+
           </td>
         </tr>
       {% endfor %}
@@ -156,6 +158,7 @@
   </div>
     {% endblock %}
 </div>
+
 
 
 
