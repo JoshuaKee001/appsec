@@ -685,6 +685,17 @@ def minusprod(id):
         session["cart"] = cart
     return redirect(url_for('cart'))
 
+@app.route('/checkItems', methods=['GET','POST'])
+def checkItems():
+    if "cart" in session:
+        cart = session["cart"]
+        products = Product.query.all()
+        noitem = len(cart)
+        return render_template('user/guest/alisa/checkItems.html', usersession = True, cart = cart, products = products, num = noitem)
+    else:
+        empty = True
+        return render_template('user/guest/cart_feedback/cart.html', usersession = True, empty = empty)
+
 
 @app.route('/consultatioPg1')
 def consultatioPg1():
