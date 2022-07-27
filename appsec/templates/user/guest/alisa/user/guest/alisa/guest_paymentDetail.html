@@ -25,6 +25,7 @@
     <div class="col">
         <div class="login-form bg-colour mt-6 p-4" id="payment_form">
             <form action="" method="POST" class="row g-3">
+                {{ form.csrf_token() }}
                 <h4 class="text-black">Make Payment!</h4>
                 <p>Please input your payment details</p>
                 <div class="col-12">

@@ -23,6 +23,8 @@
 
           <th> ID </th>
           <th>Username</th>
+          <th>Patient First Name </th>
+          <th>Patient Last Name </th>
           <th>Email</th>
           <th>Appointment present?</th>
           <th>Gender</th>
@@ -39,8 +41,11 @@
 
         <tr>
           {% for consult in consultation %}
+
           <td> {{ consult.id }}</td>
           <td>{{ consult.username }}</td>
+          <td>{{ consult.first_name }}</td>
+          <td>{{ consult.last_name }}</td>
           <td>{{ consult.email }}</td>
           {% if consult.consultstate == True %}
           <td>Yes</td>
@@ -158,7 +163,4 @@
   </div>
     {% endblock %}
 </div>
-
-
-
 

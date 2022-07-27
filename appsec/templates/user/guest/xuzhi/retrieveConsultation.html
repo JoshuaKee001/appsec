@@ -39,8 +39,9 @@
       <thead>
         <tr>
 
-          <th> ID </th>
+
           <th>Username</th>
+          <th>Patient name</th>
           <th>Email</th>
           <th>Appointment present?</th>
           <th>Gender</th>
@@ -55,8 +56,9 @@
       </thead>
       <tbody>
         <tr>
-          <td> {{ info.id }}</td>
+
           <td>{{info.username}}</td>
+          <td>{{ info.first_name + ' '  + info.last_name }} </td>
           <td>{{ info.email }}</td>
           {% if info.consultstate == True %}
           <td>Yes</td>
@@ -132,7 +134,7 @@
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                      Are you sure you want to delete {{info.username}}
+                      Are you sure you want to delete your appointment
                     </div>
 
                     <!-- Modal footer -->
