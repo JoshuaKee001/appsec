@@ -590,9 +590,7 @@ def view_product():
         return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, usersession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
     else:
         return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, usersession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
-    # else:
-    #     session.clear()
-    #     return redirect(url_for("login"))
+
 
 @app.route('/cart',methods=['GET', 'POST'])
 def cart():
@@ -605,7 +603,6 @@ def cart():
         # db.close()
 
         if "cart" in session:
-            # if valid_session:
             total = 0
             cart = session["cart"]
             products = Product.query.all()
@@ -614,27 +611,13 @@ def cart():
                     if item == product.name:
                         total += cart.get(item) * product.price
 
-            original_total = total
-
-            # discount = False
-            # if purchases == 5:
-            #     discount = True
-            #     total = total * 0.9
-            # elif purchases == 10:
-            #     discount = True
-            #     total = total * 0.8
-            # elif purchases == 15:
-            #     discount = True
-            #     total = total * 0.7
-            # elif purchases == 20:
-            #     discount = True
-            #     total = total * 0.5
-
             session["total"] = total
             noitem = len(cart)
-            return render_template('user/guest/cart_feedback/cart.html', usersession = True, cart = cart, products = products, total = total, num = noitem, original_total = original_total)
+            return render_template('user/guest/cart_feedback/cart.html', usersession = True, cart = cart, products = products, total = total, num = noitem)
         else:
-            return redirect(url_for('home'))
+            empty = True
+            return render_template('user/guest/cart_feedback/cart.html',empty = empty)
+
 
     else:
         if "cart" in session:
@@ -648,6 +631,7 @@ def cart():
             session["total"] = total
             noitem = len(cart)
             return render_template('user/guest/cart_feedback/cart.html', cart = cart, products = products, total = total, num = noitem)
+
         else:
             empty = True
             return render_template('user/guest/cart_feedback/cart.html',empty = empty)
@@ -696,6 +680,49 @@ def checkItems():
         empty = True
         return render_template('user/guest/cart_feedback/cart.html', usersession = True, empty = empty)
 
+
+@app.route('/paymentDetails', methods=["GET", "POST"])
+@login_required
+def paymentDetails():
+    form = CardInfoForm()
+
+    if request.method == 'GET':
+        user = current_user
+        form.card_name.data = user.card_name
+        form.card_no.data = user.card_no
+        form.card_expiry_month.data = user.card_exp_month
+        form.card_expiry_year.data = user.card_exp_year
+        form.card_CVV.data = user.card_CVV
+
+    if form.validate_on_submit():
+        user = current_user
+        user.card_name = form.card_name.data
+        user.card_no = form.card_no.data
+        user.card_exp_month = form.card_expiry_month.data
+        user.card_exp_year = form.card_expiry_year.data
+        user.card_CVV = form.card_CVV.data
+
+        db.session.commit()
+        return redirect(url_for('shoppingComplete'))
+
+    return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form)
+
+@app.route('/shoppingComplete', methods=["GET","POST"])
+def shoppingComplete():
+    if "cart" in session and "total" in session:
+            cart = session["cart"]
+            total = session["total"]
+            products = Product.query.all()
+
+            for i in cart:
+                for s in products:
+                    if i == s.name:
+                        s.stock = s.stock - cart[i]
+                        db.session.commit()
+
+            session.pop('cart', None)
+            session.pop('total', None)
+            return render_template('user/guest/alisa/shoppingComplete.html', usersession = True, cart = cart, total=total)
 
 @app.route('/consultatioPg1')
 def consultatioPg1():
@@ -1013,4 +1040,4 @@ def fb_submit():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, ssl_context=('server.crt', 'server.key'))
+
