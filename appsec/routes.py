@@ -113,6 +113,7 @@ def login_2(username):
 
 
 @app.route('/signup', methods=["GET", "POST"])
+@limiter.limit("2/second")
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
@@ -991,4 +992,4 @@ def fb_submit():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, ssl_context=('server.crt', 'server.key'))
+    app.run(debug=True)  # , ssl_context=('server.crt', 'server.key'))
