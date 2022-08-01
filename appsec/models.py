@@ -86,6 +86,7 @@ class graph(db.Model):
     __tablename__ = 'graph'
 
     id = db.Column(db.Integer, primary_key=True)
+    gra = db.Columen(db.Boolean, nullable = True)
     DATE1 = db.Column(db.String(30), nullable=True)
     DATE2 = db.Column(db.String(30), nullable=True)
     DATE3 = db.Column(db.String(30), nullable=True)
