@@ -39,7 +39,6 @@ class User(UserMixin, db.Model):
     card_no = db.Column(db.Integer)
     card_exp_month = db.Column(db.Integer)
     card_exp_year = db.Column(db.Integer)
-    card_CVV = db.Column(db.Integer)
 
     banned = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     verified = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())

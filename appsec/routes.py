@@ -505,7 +505,6 @@ def usercard():
         form.card_no.data = user.card_no
         form.card_expiry_month.data = user.card_exp_month
         form.card_expiry_year.data = user.card_exp_year
-        form.card_CVV.data = user.card_CVV
 
     if form.validate_on_submit():
         user = current_user
@@ -513,7 +512,6 @@ def usercard():
         user.card_no = form.card_no.data
         user.card_exp_month = form.card_expiry_month.data
         user.card_exp_year = form.card_expiry_year.data
-        user.card_CVV = form.card_CVV.data
 
         db.session.commit()
         flash(f'card info has been edited', 'info')
