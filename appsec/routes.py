@@ -733,6 +733,221 @@ def shoppingComplete():
 @app.route('/consultatioPg1')
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
+
+@app.route('/News', methods=['GET', 'POST'])
+def News():
+    if current_user.is_authenticated:
+        if current_user.role == "admin":
+          Gdb  = graph.query.all()
+          for x in Gdb:
+            date1 = x.DATE1
+            date2 = x.DATE2
+            date3 = x.DATE3
+            date4 = x.DATE4
+            date5 = x.DATE5
+            COVID1 = x.COVID1
+            COVID2 = x.COVID2
+            COVID3 = x.COVID3
+            COVID4 = x.COVID4
+            COVID5 = x.COVID5
+
+
+
+
+          data=[
+                (date1,COVID1),
+                (date2,COVID2),
+                (date3,COVID3),
+                (date4,COVID4),
+                (date5,COVID5),
+                ]
+
+          labels = [row[0] for row in data]
+          values = [row[1] for row in data]
+
+
+          return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = False, newsactive = True  )
+
+        else:
+          Gdb  = graph.query.all()
+          for x in Gdb:
+            date1 = x.DATE1
+            date2 = x.DATE2
+            date3 = x.DATE3
+            date4 = x.DATE4
+            date5 = x.DATE5
+            COVID1 = x.COVID1
+            COVID2 = x.COVID2
+            COVID3 = x.COVID3
+            COVID4 = x.COVID4
+            COVID5 = x.COVID5
+
+
+
+
+          data=[
+                (date1,COVID1),
+                (date2,COVID2),
+                (date3,COVID3),
+                (date4,COVID4),
+                (date5,COVID5),
+                ]
+
+          labels = [row[0] for row in data]
+          values = [row[1] for row in data]
+
+
+          return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = False, newsactive = True  )
+
+
+    else:
+
+        Gdb  = graph.query.all()
+        for x in Gdb:
+            date1 = x.DATE1
+            date2 = x.DATE2
+            date3 = x.DATE3
+            date4 = x.DATE4
+            date5 = x.DATE5
+            COVID1 = x.COVID1
+            COVID2 = x.COVID2
+            COVID3 = x.COVID3
+            COVID4 = x.COVID4
+            COVID5 = x.COVID5
+
+
+
+
+        data=[
+                (date1,COVID1),
+                (date2,COVID2),
+                (date3,COVID3),
+                (date4,COVID4),
+                (date5,COVID5),
+                ]
+
+        labels = [row[0] for row in data]
+        values = [row[1] for row in data]
+
+
+        return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = False, newsactive = True  )
+
+@app.route('/Graphform', methods=['GET', 'POST'])
+def Graphform():
+    print("1")
+    form = Gform()
+
+    if current_user.role == 'admin':
+       print("Im here")
+
+       if form.validate_on_submit()  :
+           print("validated")
+           gra = graph.query.all()
+           check = False
+           print(gra)
+
+
+
+           if check != True:
+
+
+
+
+
+
+            gra.id = 1
+            gra.COVID1 = str(form.COVID1.data)
+            gra.COVID2 = str(form.COVID2.data)
+            gra.COVID3 = str(form.COVID3.data)
+            gra.COVID4 = str(form.COVID4.data)
+            gra.COVID5 = str(form.COVID5.data)
+            gra.DATE1 = form.DATE1.data
+            gra.DATE2 = form.DATE2.data
+            gra.DATE3 = form.DATE3.data
+            gra.DATE4 = form.DATE4.data
+            gra.DATE5 = form.DATE5.data
+
+            db.session.commit()
+            check = True
+            return render_template('user/guest/xuzhi/News.html', form = form, staffsession = True )
+
+
+
+
+           else:
+              print("ERROR!")
+              return redirect(url_for('home'))
+       return render_template('user/guest/xuzhi/Graphform.html', form = form, staffsession = False)
+
+
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/UpGraphform', methods=['GET', 'POST'])
+def UpGraphform():
+    print("1")
+    form = Gform()
+
+    if current_user.role == 'admin':
+       print("Im here")
+
+       if form.validate_on_submit()  :
+           print("validated")
+           gra = graph.query.all()
+           check = False
+           print(gra)
+
+
+
+           if check != True:
+
+
+
+
+
+            main_graph = graph(gra = True,
+                               COVID1 = str(form.COVID1.data),
+                               COVID2 = str(form.COVID2.data),
+                               COVID3 = str(form.COVID3.data) ,
+                               COVID4 = str(form.COVID4.data),
+                               COVID5 = str(form.COVID5.data),
+                               DATE1 = form.DATE1.data,
+                               DATE2 = form.DATE2.data,
+                               DATE3 = form.DATE3.data,
+                               DATE4 = form.DATE4.data,
+                               DATE5 = form.DATE5.data)
+            db.session.add(main_graph)
+            db.session.commit()
+            check = True
+            return render_template('user/guest/xuzhi/News.html', form = form, staffsession = True )
+
+
+
+
+           else:
+              print("ERROR!")
+              return redirect(url_for('home'))
+       return render_template('user/guest/xuzhi/Graphform.html', form = form, staffsession = False)
+
+
+    else:
+        return redirect(url_for('login'))
+
+
+
+
+
+
+
+@app.route('/consultatioPg1')
+def consultatioPg1():
+
+    if current_user.is_authenticated:
+        return render_template('user/guest/xuzhi/consultatioPg1.html', notloggedin = False )
+
+    else:
+        return render_template('user/guest/xuzhi/consultatioPg1.html', notloggedin = True )
+
 @app.route('/retrieveConsultation', methods=['GET', 'POST'])
 def retrieveConsultation():
     if current_user.is_authenticated:
@@ -831,11 +1046,66 @@ def create_consultation():
       if form.validate_on_submit()  :
 
 
+
           try:
             appointment = False
+            fname = form.first_name.data.lower()
+            lname = form.last_name.data.lower()
+            date = form.date_joined.data
+            rem = form.remarks.data.lower()
+            gen = form.gender.data.lower()
+            doc = form.doc.data.lower()
+            time = form.time.data.lower()
+
+            excluded_chars = "*?!'^+%&/()=}][{$#"
+
+
+
+
+
+
+
+
 
 
             all = user.query.all()
+
+
+            if excluded_chars in fname:
+                appointment = False
+                raise ValidationError
+
+            else:
+                appintment = True
+            if excluded_chars in lname:
+                appointment = False
+                raise ValidationError
+
+            else:
+                appointment = False
+
+            try :
+                datetime.strptime(date, '%Y-%m-%d')
+                appointment = True
+            except:
+                appointment = False
+
+
+            if str(doc) == 't' or 't' or 'm' 'l':
+                appointment = True
+
+
+            else:
+                appointment = False
+                raise ValidationError
+
+            if  str(time) == '9.00am - 9.30am'  '10.00am - 10.30am' or '11.00am - 11.30am' or '12.00pm -12.30pm' or '3.00pm - 3.30pm' or '4.00pm - 4.30pm'  or  '5.00pm -5.30pm':
+                appointment = True
+
+
+            else:
+                appointment = False
+                raise ValidationError
             for i in all:
 
 
@@ -858,6 +1128,7 @@ def create_consultation():
                       faliure = True
                       print("FALURE")
                       appointment = False
+                      return render_template('user/guest/xuzhi/ErrorDate.html', timelistval = str(form.time.data), datelistval = str(form.date_joined.data) )
 
                   else:
                       appointment = True
@@ -866,6 +1137,8 @@ def create_consultation():
               else:
 
                 appointment = True
+
+
 
             if appointment == True:
               print("hey ")
@@ -892,8 +1165,12 @@ def create_consultation():
 
 
               return render_template('user/guest/xuzhi/retrieveConsultation.html', count =1, consultactive = True, info = info, form = form )
+
             else:
-              return render_template('user/guest/xuzhi/ErrorDate.html', timelistval = str(form.time.data), datelistval = str(form.date_joined.data) )
+               print('Danger! Error!')
+               return render_template('user/guest/xuzhi/createConsultation.html', form = form)
+
+
 
 
           except InvalidRequestError:
@@ -917,13 +1194,13 @@ def create_consultation():
 
       return render_template('user/guest/xuzhi/createConsultation.html', form = form)
 
+    else:
+        return redirect(url_for('login'))
+
 
 
 @app.route('/delete_consultation', methods=['GET', 'POST'])
 def delete_consultation():
-
-
-
 
 
     if current_user.is_authenticated:
@@ -992,9 +1269,7 @@ def delete_consultationAd(user_id):
         return redirect(url_for('login'))
 
 
-@app.route('/News')
-def news():
-    return render_template('user/guest/xuzhi/News.html')
+
 
 @app.route('/MOHNews')
 def MOHnews():
