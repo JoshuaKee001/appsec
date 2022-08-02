@@ -240,6 +240,10 @@ def change_password():
 def edit_info():
     form = EditInfoForm()
 
+    if request.method == "GET":
+        form.new_username.data = current_user.username
+        form.new_email.data = current_user.email
+
     if form.validate_on_submit():
         try:
             user = current_user
@@ -507,6 +511,9 @@ def usercard():
         form.card_expiry_year.data = user.card_exp_year
 
     if form.validate_on_submit():
+        if not form.valid_card_number(form.card_no.data):
+            flash('Please provide a valid credit card number', 'warning')
+            return redirect(url_for('usercard'))
         user = current_user
         user.card_name = form.card_name.data
         user.card_no = form.card_no.data

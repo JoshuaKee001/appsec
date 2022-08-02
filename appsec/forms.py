@@ -122,10 +122,34 @@ class CreateProductForm(FlaskForm):
 
 class CardInfoForm(FlaskForm):
     card_name = StringField("Name On Card:", validators=[InputRequired(), Length(max=300)])
-    card_no = IntegerField("Card Number:", validators=[InputRequired()])
+    card_no = StringField("Card Number:", validators=[InputRequired()])
     card_expiry_month = IntegerField("", [validators.NumberRange(min=0, max=12)])
     card_expiry_year = IntegerField("", [validators.NumberRange(min=0, max=99)])
     card_CVV = IntegerField("CVV:", [validators.NumberRange(min=0, max=999)])
+
+    def valid_card_number(self, card_no):
+        card_number = list(card_no)
+        check_digit = card_number.pop()
+        card_number.reverse()
+        processed_digits = []
+
+        for index, digit in enumerate(card_number):
+            if index % 2 == 0:
+                doubled_digit = int(digit) * 2
+
+                if doubled_digit > 9:
+                    doubled_digit = doubled_digit - 9
+
+                processed_digits.append(doubled_digit)
+            else:
+                processed_digits.append(int(digit))
+
+        total = int(check_digit) + sum(processed_digits)
+
+        if total % 10 == 0:
+            return True
+        else:
+            return False
 
 
 class Quantity(FlaskForm):
