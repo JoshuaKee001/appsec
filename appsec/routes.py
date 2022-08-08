@@ -1329,6 +1329,110 @@ def delete_consultationAd(user_id):
         return redirect(url_for('login'))
 
 
+@app.route('/stafffeed/1', methods=["GET", "POST"])
+def retrievefeedback():
+
+    if current_user.is_authenticated:
+
+
+        users_dict ={}
+        db = User
+        UserName =  User.username
+        form = createConsultationForm()
+        if current_user.role == 'admin':
+
+          users_dict ={}
+          db = User
+          UserName =  User.username
+          form = createConsultationForm()
+
+          print('placeholder')
+
+
+          z=0
+          remarks = "Empty"
+          user = current_user
+          i = current_user.id
+
+          test = user
+          print('test' ,test )
+          empty = " "
+          feed = feedback.query.all()
+
+
+
+
+
+          return render_template('user/staff/REfeedback.html',form = form, feedback = feed)
+
+
+
+        else:
+            session.clear()
+
+
+            return redirect(url_for('home'))
+
+
+    else:
+
+        return redirect(url_for('login'))
+
+
+
+@app.route('/feedback_submit', methods=["GET", "POST"])
+def fb_submit():
+    return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
+@app.post('/<int:user_id>/deleteFed/')
+def delete_feedback(user_id):
+    n = user_id
+
+
+
+    if current_user.role == 'admin':
+     if current_user.is_authenticated:
+
+
+
+      feed = feedback.query.get_or_404(n)
+      db.session.delete(feed)
+      id = feed.id
+      db.session.commit()
+      return redirect(url_for('retrieveConsultation' ))
+
+     else:
+         return redirect(url_for('login'))
+
+
+    else:
+        return redirect(url_for('login'))
+@app.route('/feedback', methods=["GET", "POST"])
+def feedform():
+    if current_user.is_authenticated:
+      form = FeedbackForm()
+      if form.validate_on_submit():
+          user = current_user
+
+          tday = str(datetime.today())
+
+
+          FEform = feedback(
+          username = user.username,
+          date = tday ,
+          email = form.email.data.lower(),
+          subject = form.subject.data.lower(),
+          description = form.description.data.lower())
+
+          db.session.add(FEform)
+          db.session.commit()
+
+          return redirect(url_for('fb_submit'))
+      else:
+        return render_template('user/guest/alisa/feedback.html', usersession = True, form = form,  contactactive = True)
+
+    else:
+        return redirect(url_for('login'))
+
 
 
 @app.route('/MOHNews')
