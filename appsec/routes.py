@@ -173,7 +173,7 @@ def user():
 def uploadPic():
     if request.method == "POST":
         if "profilePic" not in request.files:
-            print("No File Sent")
+            flash('No file sent', 'info')
             return redirect(url_for("user"))
 
         file = request.files['profilePic']
@@ -408,36 +408,37 @@ def staffinvent(page=1):
 def create_product():
     form = CreateProductForm()
     if form.validate_on_submit():
-        try:
-            product = Product(name=form.name.data,
-                              price=form.price.data,
-                              category=form.category.data,
-                              short_description=form.short_description.data,
-                              long_description=form.long_description.data,
-                              stock=form.stock.data)
-            db.session.add(product)
-            db.session.commit()
-            flash(f"Product has been added", "success")
-            return redirect(url_for('staffinvent', page=1))
+        if "productPic" not in request.files:
+            flash(f'no file sent', 'info')
+            return redirect(url_for("create_product"))
 
-        except InvalidRequestError:
-            db.session.rollback()
-            flash(f"Something went wrong!", "danger")
-        except IntegrityError:
-            db.session.rollback()
-            flash(f"User already exists!.", "warning")
-        except DataError:
-            db.session.rollback()
-            flash(f"Invalid Entry", "warning")
-        except InterfaceError:
-            db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
-        except DatabaseError:
-            db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
-        except BuildError:
-            db.session.rollback()
-            flash(f"An error occured !", "danger")
+        file = request.files['productPic']
+        filename = file.filename
+
+        if filename != '':
+            if file and allowed_file(filename):
+                extension = file.filename.split('.')[1]
+                filename = ("%s.%s" % (form.name.data, extension))
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+            else:
+                flash(f'Image not correct format', 'warning')
+                return redirect(url_for('create_product'))
+        else:
+            flash(f'No file inputted', 'info')
+            return redirect(url_for('create_product'))
+
+        product = Product(name=form.name.data,
+                          price=form.price.data,
+                          category=form.category.data,
+                          short_description=form.short_description.data,
+                          long_description=form.long_description.data,
+                          stock=form.stock.data,
+                          img_file_name=filename)
+        db.session.add(product)
+        db.session.commit()
+        flash(f"Product has been added", "success")
+        return redirect(url_for('staffinvent', page=1))
 
     return render_template('user/staff/joshua/StaffInventory/CRUDProducts/create_product.html', form=form)
 
@@ -451,12 +452,32 @@ def edit_product():
     form = CreateProductForm(request.form)
 
     if request.method == 'POST' and form.validate_on_submit():
+        if "productPic" not in request.files:
+            flash(f'no file sent', 'info')
+            return redirect(url_for("create_product"))
+
+        file = request.files['productPic']
+        filename = file.filename
+
+        if filename != '':
+            if file and allowed_file(filename):
+                extension = file.filename.split('.')[1]
+                filename = ("%s.%s" % (form.name.data, extension))
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+            else:
+                flash(f'Image not correct format', 'warning')
+                return redirect(url_for('create_product'))
+        else:
+            flash(f'No file inputted', 'info')
+            return redirect(url_for('create_product'))
         product.name = form.name.data
         product.price = form.price.data
         product.category = form.category.data
         product.short_description = form.short_description.data
         product.long_description = form.long_description.data
         product.stock = form.stock.data
+        product.img_file_name = filename
 
         db.session.commit()
         return redirect(url_for('staffinvent', page=1))
@@ -772,7 +793,7 @@ def shoppingComplete():
 @app.route('/consultatioPg1')
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
-"""
+
 @app.route('/News', methods=['GET', 'POST'])
 def News():
     if current_user.is_authenticated:
@@ -1357,7 +1378,7 @@ def feedback():
 @app.route('/feedback_submit', methods=["GET", "POST"])
 def fb_submit():
     return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
-"""
+
 
 if __name__ == "__main__":
     app.run(debug=True)  # , ssl_context=('localhost.pem', 'localhost-key.pem'))
