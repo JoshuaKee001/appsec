@@ -181,6 +181,7 @@
                   </div>
                </form>
                <br style="clear:both;">
+               {% if name.role is none %}
                <div class="d-flex flex-column align-items-center text-center">
                   <img src="static/uploads/{{ name.pfpfilename }}" class="rounded-circle" width="150" height="150">
                   <div class="mt-3">
@@ -216,6 +217,7 @@
                      </div>
                   </form>
                </div>
+               {% endif %}
             </div>
          </div>
          <div class="card mb-3">

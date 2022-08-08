@@ -17,13 +17,13 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(300), nullable=False, unique=True)
     pfpfilename = db.Column(db.String(85))
     two_factor_enabled = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
-    otp_secret = db.Column(db.String(16))
+    otp_secret = db.Column(db.String(32))
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.otp_secret is None:
             # generate a random secret
-            self.otp_secret = base64.b32encode(secrets.token_bytes(10)).decode('utf-8')
+            self.otp_secret = base64.b32encode(secrets.token_bytes(20)).decode('utf-8')
 
     role = db.Column(db.String(20))
     age = db.Column(db.String(3))

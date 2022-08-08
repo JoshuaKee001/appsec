@@ -122,9 +122,9 @@ def signup():
             email = form.email.data.lower()
             password = form.password.data
             consultstate = False  
-        
 
-            newuser = User(username=username, email=email, password=bcrypt.generate_password_hash(password), consultstate = consultstate)
+            newuser = User(username=username, email=email, password=bcrypt.generate_password_hash(password),
+                           consultstate=consultstate, pfpfilename='default.png')
 
             db.session.add(newuser)
             db.session.commit()
@@ -201,7 +201,10 @@ def uploadPic():
 @app.route('/resetProfilePic', methods=["GET", "POST"])
 @login_required
 def resetPfp():
-    pass
+    current_user.pfpfilename = 'default.png'
+    db.session.commit()
+    flash('Profile pic has been reset', 'info')
+    return redirect(url_for('user'))
 
 
 @app.route('/enable_2fa', methods=["GET", "POST"])
@@ -769,7 +772,7 @@ def shoppingComplete():
 @app.route('/consultatioPg1')
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
-
+"""
 @app.route('/News', methods=['GET', 'POST'])
 def News():
     if current_user.is_authenticated:
@@ -1354,7 +1357,7 @@ def feedback():
 @app.route('/feedback_submit', methods=["GET", "POST"])
 def fb_submit():
     return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
-
+"""
 
 if __name__ == "__main__":
     app.run(debug=True)  # , ssl_context=('localhost.pem', 'localhost-key.pem'))
