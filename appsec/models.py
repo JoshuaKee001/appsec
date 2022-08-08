@@ -100,7 +100,7 @@ class graph(db.Model):
     COVID5 = db.Column(db.Integer, nullable = True)
 
 
-class feedback(db.model):
+class feedback(db.Model):
     __tablename__ = 'feedback'
 
     id = db.Column(db.Integer, primary_key=True)
