@@ -1,0 +1,110 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
+{% block title %}All Consultations | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+<style>
+  .centralisation {
+
+
+  }
+</style>
+<h1 class="display-4"> Shown appointments </h1>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+
+          <th> ID </th>
+          <th>Username</th>
+          <th>date </th>
+          <th>Email </th>
+          <th>Subject</th>
+          <th>Description</th>
+
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          {% for feed in feedback %}
+
+          <td> {{ feed.id }}</td>
+          <td>{{ feed.username }}</td>
+          <td>{{ feed.date }}</td>
+          <td>{{ feed.email }}</td>
+          <td>{{ feed.subject }}</td>
+          <td>{{ feed.description }}</td>
+
+
+
+          <td>
+
+
+            <!-- The Modal -->
+
+
+
+
+
+                     <form method="POST"
+                action="{{ url_for('delete_feedback', user_id = feed.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{feed.username}}?');">-->
+              <!-- Button to Open the Modal -->
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#myModal_{{feed.id}}">
+                Delete
+              </button>
+              <div class="modal" id="myModal_{{feed.id}}">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                      <h4 class="modal-title">Delete Confirmation</h4>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                      Are you sure you want to delete {{feed.username}} appointment
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                      <input type="submit" value="Delete" class="btn btn-danger">
+
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </form>
+
+
+          </td>
+        </tr>
+      {% endfor %}
+
+
+
+
+      </tbody>
+    </table>
+  </div>
+
+    {% endblock %}
+</div>
+
