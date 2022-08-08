@@ -769,7 +769,7 @@ def shoppingComplete():
 @app.route('/consultatioPg1')
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
-"""
+
 @app.route('/News', methods=['GET', 'POST'])
 def News():
     if current_user.is_authenticated:
@@ -1354,7 +1354,7 @@ def feedback():
 @app.route('/feedback_submit', methods=["GET", "POST"])
 def fb_submit():
     return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
-"""
+
 
 if __name__ == "__main__":
     app.run(debug=True)  # , ssl_context=('localhost.pem', 'localhost-key.pem'))
