@@ -41,7 +41,7 @@ from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, Forgo
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
     Login2Form, FiltersAndSorting, AccountListSearchForm
 from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email, \
-    encrypt, decrypt
+    allowed_file, ALLOWED_EXTENSIONS
 
 
 @login_manager.user_loader
@@ -166,6 +166,42 @@ def user():
     form = EmptyForm()
 
     return render_template('user/loggedin/useraccount.html', name=current_user, form=form)
+
+
+@app.route('/uploadProfilePic', methods=["GET", "POST"])
+@login_required
+def uploadPic():
+    if request.method == "POST":
+        if "profilePic" not in request.files:
+            print("No File Sent")
+            return redirect(url_for("user"))
+
+        file = request.files['profilePic']
+        filename = file.filename
+
+        if filename != '':
+            if file and allowed_file(filename):
+                extension = file.filename.split('.')[1]
+                filename = ("%s.%s" % (current_user.username, extension))
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                # now implement logic to get html to show profile pic
+                current_user.pfpfilename = filename
+                db.session.commit()
+                flash(f'Profile Pic has been uploaded', 'success')
+                return redirect(url_for('user'))
+            else:
+                flash(f'Image not correct format', 'warning')
+                return redirect(url_for('user'))
+        else:
+            flash(f'No file inputted', 'info')
+            return redirect(url_for('user'))
+
+
+@app.route('/resetProfilePic', methods=["GET", "POST"])
+@login_required
+def resetPfp():
+    pass
 
 
 @app.route('/enable_2fa', methods=["GET", "POST"])
@@ -733,7 +769,7 @@ def shoppingComplete():
 @app.route('/consultatioPg1')
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
-
+"""
 @app.route('/News', methods=['GET', 'POST'])
 def News():
     if current_user.is_authenticated:
@@ -1318,7 +1354,7 @@ def feedback():
 @app.route('/feedback_submit', methods=["GET", "POST"])
 def fb_submit():
     return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
-
+"""
 
 if __name__ == "__main__":
     app.run(debug=True)  # , ssl_context=('localhost.pem', 'localhost-key.pem'))

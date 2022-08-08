@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(300), nullable=False, unique=True)
+    pfpfilename = db.Column(db.String(85))
     two_factor_enabled = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     otp_secret = db.Column(db.String(16))
 

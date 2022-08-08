@@ -48,6 +48,7 @@ def create_app():
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE='Lax',
     )
+    app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
     login_manager.init_app(app)
     db.init_app(app)

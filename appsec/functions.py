@@ -2,7 +2,8 @@ from flask import render_template
 from flask_mail import Message
 from app import mail
 import os
-from Crypto.Cipher import PKCS1_OAEP
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
 def send_password_reset_email(user):
@@ -51,13 +52,5 @@ def send_verification_email(user):
     mail.send(msg)
 
 
-def encrypt(public_key, plaintext_utf8):
-    rsa = PKCS1_OAEP.new(public_key)
-    ciphertext_utf8 = rsa.encrypt(plaintext_utf8)
-    return ciphertext_utf8
-
-
-def decrypt(private_key, ciphertext_utf8):
-    rsa = PKCS1_OAEP.new(private_key)
-    decryptedtext_utf8 = rsa.decrypt(ciphertext_utf8)
-    return decryptedtext_utf8
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
