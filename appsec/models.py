@@ -100,3 +100,16 @@ class graph(db.Model):
     COVID5 = db.Column(db.Integer, nullable = True)
 
 
+class feedback(db.model):
+    __tablename__ = 'feedback'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(40))
+    date = db.Column(db.String(50))
+    email = db.Column(db.String(50))
+    subject = db.Column(db.String(50))
+    description = db.Column(db.String(30))
+
+
+
+
