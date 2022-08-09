@@ -836,18 +836,25 @@ def shoppingComplete():
 @app.route('/consultatioPg1')
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
-
 @app.route('/News', methods=['GET', 'POST'])
 def News():
+
+
+    labels = []
+    values = []
+
     if current_user.is_authenticated:
+        labels = []
+        values = []
         if current_user.role == "admin":
           Gdb  = graph.query.all()
+
           for x in Gdb:
-            date1 = x.DATE1
-            date2 = x.DATE2
-            date3 = x.DATE3
-            date4 = x.DATE4
-            date5 = x.DATE5
+            dat1 = x.DATE1
+            dat2 = x.DATE2
+            dat3 = x.DATE3
+            dat4 = x.DATE4
+            dat5 = x.DATE5
             COVID1 = x.COVID1
             COVID2 = x.COVID2
             COVID3 = x.COVID3
@@ -855,21 +862,19 @@ def News():
             COVID5 = x.COVID5
 
 
-
-
-          data=[
-                (date1,COVID1),
-                (date2,COVID2),
-                (date3,COVID3),
-                (date4,COVID4),
-                (date5,COVID5),
+            data=[
+                (dat1,COVID1),
+                (dat2,COVID2),
+                (dat3,COVID3),
+                (dat4,COVID4),
+                (dat5,COVID5),
                 ]
 
-          labels = [row[0] for row in data]
-          values = [row[1] for row in data]
+            labels = [row[0] for row in data]
+            values = [row[1] for row in data]
 
 
-          return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = False, newsactive = True  )
+          return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = True, newsactive = True  )
 
         else:
           Gdb  = graph.query.all()
@@ -888,7 +893,7 @@ def News():
 
 
 
-          data=[
+            data=[
                 (date1,COVID1),
                 (date2,COVID2),
                 (date3,COVID3),
@@ -896,8 +901,8 @@ def News():
                 (date5,COVID5),
                 ]
 
-          labels = [row[0] for row in data]
-          values = [row[1] for row in data]
+            labels = [row[0] for row in data]
+            values = [row[1] for row in data]
 
 
           return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = False, newsactive = True  )
@@ -921,7 +926,7 @@ def News():
 
 
 
-        data=[
+            data=[
                 (date1,COVID1),
                 (date2,COVID2),
                 (date3,COVID3),
@@ -929,14 +934,14 @@ def News():
                 (date5,COVID5),
                 ]
 
-        labels = [row[0] for row in data]
-        values = [row[1] for row in data]
+            labels = [row[0] for row in data]
+            values = [row[1] for row in data]
 
 
         return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = False, newsactive = True  )
 
-@app.route('/Graphform', methods=['GET', 'POST'])
-def Graphform():
+@app.route('/UpGraphform', methods=['GET', 'POST'])
+def UpGraphform():
     print("1")
     form = Gform()
 
@@ -945,9 +950,9 @@ def Graphform():
 
        if form.validate_on_submit()  :
            print("validated")
-           gra = graph.query.all()
+           grap = graph.query.all()
            check = False
-           print(gra)
+
 
 
 
@@ -957,22 +962,22 @@ def Graphform():
 
 
 
+            for gra in grap:
+              gra.id = 1
+              gra.COVID1 = str(form.COVID1.data)
+              gra.COVID2 = str(form.COVID2.data)
+              gra.COVID3 = str(form.COVID3.data)
+              gra.COVID4 = str(form.COVID4.data)
+              gra.COVID5 = str(form.COVID5.data)
+              gra.DATE1 = form.DATE1.data
+              gra.DATE2 = form.DATE2.data
+              gra.DATE3 = form.DATE3.data
+              gra.DATE4 = form.DATE4.data
+              gra.DATE5 = form.DATE5.data
 
-            gra.id = 1
-            gra.COVID1 = str(form.COVID1.data)
-            gra.COVID2 = str(form.COVID2.data)
-            gra.COVID3 = str(form.COVID3.data)
-            gra.COVID4 = str(form.COVID4.data)
-            gra.COVID5 = str(form.COVID5.data)
-            gra.DATE1 = form.DATE1.data
-            gra.DATE2 = form.DATE2.data
-            gra.DATE3 = form.DATE3.data
-            gra.DATE4 = form.DATE4.data
-            gra.DATE5 = form.DATE5.data
-
-            db.session.commit()
-            check = True
-            return render_template('user/guest/xuzhi/News.html', form = form, staffsession = True )
+              db.session.commit()
+              check = True
+              return render_template('user/guest/xuzhi/News.html', form = form, staffsession = True )
 
 
 
@@ -986,8 +991,8 @@ def Graphform():
     else:
         return redirect(url_for('login'))
 
-@app.route('/UpGraphform', methods=['GET', 'POST'])
-def UpGraphform():
+@app.route('/Graphform', methods=['GET', 'POST'])
+def Graphform():
     print("1")
     form = Gform()
 
@@ -1035,6 +1040,9 @@ def UpGraphform():
 
     else:
         return redirect(url_for('login'))
+
+
+
 
 
 
