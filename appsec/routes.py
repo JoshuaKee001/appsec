@@ -562,6 +562,42 @@ def stafflist(page=1):
     return render_template('user/staff/stafflist2.html', form=form, staff_list=staff_list, page=page)
 
 
+@app.route('/deletestaff/<id>', methods=["GET", "POST"])
+@login_required
+@required_roles('admin')
+def deleteStaff(id):
+    staff = User.query.filter_by(id=id).first()
+    db.session.delete(staff)
+    db.session.commit()
+
+    flash(f"staff has been deleted", 'success')
+    return redirect(url_for('stafflist', page=1))
+
+
+@app.route('/unadmin/<id>', methods=["GET", "POST"])
+@login_required
+@required_roles('admin')
+def unadmin(id):
+    staff = User.query.filter_by(id=id).first()
+    staff.role = None
+    db.session.commit()
+
+    flash("admin privileges have been revoked", 'info')
+    return redirect(url_for('stafflist', page=1))
+
+
+@app.route('/make_admin/<id>', methods=["GET", "POST"])
+@login_required
+@required_roles('admin')
+def make_admin(id):
+    user = User.query.filter_by(id=id).first()
+    user.role = 'admin'
+    db.session.commit()
+
+    flash("A user has been made admin", 'info')
+    return redirect(url_for('staffaccountlist', page=1))
+
+
 @app.route('/banUser/<id>', methods=['GET', 'POST'])
 @login_required
 @required_roles('admin')

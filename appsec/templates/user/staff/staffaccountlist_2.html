@@ -159,9 +159,97 @@
                 <!--thead class="table-dark"-->
                 {% if user.verified %} <!-- if user.get_verified() -->
                 <thead class="table-success">
+                <td style="font-weight: bold;">Account ID</td>
+                  <td style="font-weight: bold;">Account Name</td>
+                  <td style="font-weight: bold;">Account Email</td>
+                </thead>
+                <tbody>
+                  <td style="font-weight: bold;">{{ user.id }}</td>
+                  <td style="font-weight: bold;"> {{ user.username }}</td>
+                  <td style="font-weight: bold;">{{ user.email }}</td>
+
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <!--div class="col"-->
+                <form action="{{ url_for('banUser', id=user.id) }}" method="POST" style="width:55px;">
+                  {{ form.csrf_token }}
+                  <!--input type="submit" value="Delete" class="btn btn-danger"-->
+
+                  <!-- w3 schools modal button-->
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#myModal_{{ user.id }}">
+                    Ban
+                  </button>
+
+                  <!-- The Modal -->
+                  <div class="modal" id="myModal_{{ user.id }}">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                          <h4 class="modal-title">Ban Confirmation</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                          Are you sure you want to ban {{ user.username }} ?
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                          <input type="submit" value="Ban" class="btn btn-danger">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+
+                <form action="{{ url_for('make_admin', id=user.id) }}" method="POST" style="width:55px;">
+                  {{ form.csrf_token }}
+                  <!--input type="submit" value="Delete" class="btn btn-danger"-->
+
+                  <!-- w3 schools modal button-->
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#myModal_make_admin_{{ user.id }}">
+                    Make Admin
+                  </button>
+
+                  <!-- The Modal -->
+                  <div class="modal" id="myModal_make_admin_{{ user.id }}">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                          <h4 class="modal-title">Make Admin Confirmation</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                          Are you sure you want to make {{ user.username }} admin?
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                          <input type="submit" value="Make Admin" class="btn btn-danger">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
                   {% else %}
                   <thead class="table-dark">
-                  {% endif %}
                   <td style="font-weight: bold;">Account ID</td>
                   <td style="font-weight: bold;">Account Name</td>
                   <td style="font-weight: bold;">Account Email</td>
@@ -213,7 +301,10 @@
                   </div>
 
                 </form>
-                
+
+
+                  {% endif %}
+
 
 
                 {% if not user.verified %} <!-- if user.get_verified() == False -->
