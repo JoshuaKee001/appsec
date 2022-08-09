@@ -37,9 +37,9 @@ from flask_login import (
 
 from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
 from models import User, Product
-from forms import LoginForm, SignUpForm, ChangePasswordForm, EditInfoForm, ForgotPasswordForm, \
+from forms import LoginForm, SignUpForm, ChangePasswordForm, EditEmailForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
-    Login2Form, FiltersAndSorting, AccountListSearchForm
+    Login2Form, FiltersAndSorting, AccountListSearchForm, EditNameForm
 from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email, \
     allowed_file, ALLOWED_EXTENSIONS
 
@@ -274,22 +274,23 @@ def change_password():
     return render_template('/user/loggedin/user_password_edit.html', form=form)
 
 
-@app.route('/edit_info', methods=["GET", "POST"])
+@app.route('/edit_name', methods=["GET", "POST"])
 @login_required
-def edit_info():
-    form = EditInfoForm()
+def edit_name():
+    form = EditNameForm()
 
     if request.method == "GET":
         form.new_username.data = current_user.username
-        form.new_email.data = current_user.email
 
     if form.validate_on_submit():
         try:
             user = current_user
-            user.email = form.new_email.data
+            new_username = form.new_username.data
+            if new_username == user.username:
+                return redirect(url_for('user'))
             user.username = form.new_username.data
             db.session.commit()
-            flash(f"Info has been updated", "success")
+            flash(f"Username has been updated", "success")
             return redirect(url_for('user'))
 
         except InvalidRequestError:
@@ -311,7 +312,49 @@ def edit_info():
             db.session.rollback()
             flash(f"An error occured !", "danger")
 
-    return render_template('user/loggedin/user_info_edit.html', form=form)
+    return render_template('user/loggedin/user_name_edit.html', form=form)
+
+
+@app.route('/edit_email', methods=["GET", "POST"])
+@login_required
+def edit_email():
+    form = EditEmailForm()
+
+    if request.method == "GET":
+        form.new_email.data = current_user.email
+
+    if form.validate_on_submit():
+        try:
+            user = current_user
+            new_email = form.new_email.data
+            if new_email == user.email:
+                return redirect(url_for('user'))
+            user.email = form.new_email.data
+            user.verified = False
+            db.session.commit()
+            flash(f"Email has been updated", "success")
+            return redirect(url_for('user'))
+
+        except InvalidRequestError:
+            db.session.rollback()
+            flash(f"Something went wrong!", "danger")
+        except IntegrityError:
+            db.session.rollback()
+            flash(f"User already exists!.", "warning")
+        except DataError:
+            db.session.rollback()
+            flash(f"Invalid Entry", "warning")
+        except InterfaceError:
+            db.session.rollback()
+            flash(f"Error connecting to the database", "danger")
+        except DatabaseError:
+            db.session.rollback()
+            flash(f"Error connecting to the database", "danger")
+        except BuildError:
+            db.session.rollback()
+            flash(f"An error occured !", "danger")
+
+    return render_template('user/loggedin/user_email_edit.html', form=form)
 
 
 @app.route('/forgot_password', methods=["GET", "POST"])
@@ -1485,4 +1528,8 @@ def fb_submit():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)  # , ssl_context=('localhost.pem', 'localhost-key.pem'))
+    app.run(debug=True)
+"""
+if __name__ == "__main__":
+    app.run(ssl_context=('localhost.pem', 'localhost-key.pem'))
+"""

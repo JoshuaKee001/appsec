@@ -64,21 +64,24 @@ class ChangePasswordForm(FlaskForm):
     ])
 
 
-class EditInfoForm(FlaskForm):
+class EditNameForm(FlaskForm):
     new_username = StringField("", validators=[
         InputRequired(),
         Length(3, 20, message="Please provide a valid name"),
         Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0, "Usernames must have only letters, " "numbers, dots or underscores",),
     ])
+
+    def validate_username(self, new_username):
+        if User.query.filter_by(new_username=new_username.data).first():
+            raise ValidationError("Username already taken!")
+
+
+class EditEmailForm(FlaskForm):
     new_email = StringField(validators=[InputRequired(), Email(), Length(1, 64)])
 
     def validate_email(self, new_email):
         if User.query.filter_by(new_email=new_email.data).first():
             raise ValidationError("Email already registered!")
-
-    def validate_username(self, new_username):
-        if User.query.filter_by(new_username=new_username.data).first():
-            raise ValidationError("Username already taken!")
 
 
 class ForgotPasswordForm(FlaskForm):

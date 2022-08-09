@@ -16,6 +16,7 @@
 <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
 {% if messages %}
 {% for category, message in messages %}
+<br>
 <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
     {{ message }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -276,6 +277,12 @@
                </div>
                <hr>
                <div class="row">
+                  <div class="col-sm-12">
+                     <a class="btn btn-info " href="/edit_name">Edit Username</a>
+                  </div>
+               </div>
+               <hr>
+               <div class="row">
                   <div class="col-sm-3">
                      <h6 class="mb-0">Email</h6>
                   </div>
@@ -286,7 +293,7 @@
                <hr>
                <div class="row">
                   <div class="col-sm-12">
-                     <a class="btn btn-info " href="/edit_info">Edit Username and Email</a>
+                     <a class="btn btn-info " href="/edit_email">Edit Email</a>
                   </div>
                </div>
                <hr>
