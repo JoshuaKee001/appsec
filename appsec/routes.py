@@ -1503,23 +1503,6 @@ def Background():
 def help():
     return render_template('user/guest/alisa/help.html')
 
-#feedback form
-@app.route('/feedback', methods=["GET", "POST"])
-def feedback():
-    form = FeedbackForm()
-    if form.validate_on_submit():
-        user = current_user
-        feedback = user
-
-        feedback.user = id
-        feedback.name = form.name.data.lower()
-        feedback.email = form.email.data.lower()
-        feedback.subject = form.subject.data.lower()
-        feedback.description = form.description.data.lower()
-
-        return redirect(url_for('fb_submit'))
-    else:
-        return render_template('user/guest/alisa/feedback.html', usersession = True, form = form,  contactactive = True)
 
 #feedback submit button
 @app.route('/feedback_submit', methods=["GET", "POST"])
