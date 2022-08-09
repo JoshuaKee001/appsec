@@ -1,6 +1,6 @@
 from flask import render_template
 from flask_mail import Message
-from app import mail
+from app import mail, f
 import os
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -54,3 +54,19 @@ def send_verification_email(user):
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def encrypt(data):
+    unencrypted_data = str(data)
+    encoded_data = unencrypted_data.encode()
+    encrypted_data = f.encrypt(encoded_data)
+
+    return encrypted_data
+
+
+def decrypt(encrypted_data):
+    encrypted_data = encrypted_data
+    encoded_data = f.decrypt(encrypted_data)
+    data = encoded_data.decode()
+
+    return data

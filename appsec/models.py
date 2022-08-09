@@ -37,9 +37,9 @@ class User(UserMixin, db.Model):
     consultstate = db.Column(db.Boolean)
 
     card_name = db.Column(db.String(300))
-    card_no = db.Column(db.Integer)
-    card_exp_month = db.Column(db.Integer)
-    card_exp_year = db.Column(db.Integer)
+    card_no = db.Column(db.String(300))
+    card_exp_month = db.Column(db.String(300))
+    card_exp_year = db.Column(db.String(300))
 
     banned = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     verified = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())

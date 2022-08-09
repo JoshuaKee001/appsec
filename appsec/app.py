@@ -17,6 +17,13 @@ from flask_login import (
     logout_user,
     login_required,
 )
+from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+
+load_dotenv()
+
+string_key = os.getenv('encryption_key')
+key = string_key.encode()
 
 login_manager = LoginManager()
 login_manager.session_protection = "strong"
@@ -30,6 +37,7 @@ limiter = Limiter(key_func=get_remote_address)
 mail = Mail()
 jwt = JWTManager()
 csrf = CSRFProtect()
+f = Fernet(key)
 
 
 def create_app():

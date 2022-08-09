@@ -35,13 +35,13 @@ from flask_login import (
     login_required,
 )
 
-from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles
+from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles, f
 from models import User, Product
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditEmailForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
     Login2Form, FiltersAndSorting, AccountListSearchForm, EditNameForm
 from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email, \
-    allowed_file, ALLOWED_EXTENSIONS
+    allowed_file, ALLOWED_EXTENSIONS, encrypt, decrypt
 
 
 @login_manager.user_loader
@@ -642,12 +642,12 @@ def delete_account():
 def usercard():
     form = CardInfoForm()
 
-    if request.method == 'GET':
+    if request.method == 'GET' and current_user.card_name is not None:
         user = current_user
         form.card_name.data = user.card_name
-        form.card_no.data = user.card_no
-        form.card_expiry_month.data = user.card_exp_month
-        form.card_expiry_year.data = user.card_exp_year
+        form.card_no.data = decrypt(user.card_no)
+        form.card_expiry_month.data = decrypt(user.card_exp_month)
+        form.card_expiry_year.data = decrypt(user.card_exp_year)
 
     if form.validate_on_submit():
         if not form.valid_card_number(form.card_no.data):
@@ -655,9 +655,10 @@ def usercard():
             return redirect(url_for('usercard'))
         user = current_user
         user.card_name = form.card_name.data
-        user.card_no = form.card_no.data
-        user.card_exp_month = form.card_expiry_month.data
-        user.card_exp_year = form.card_expiry_year.data
+
+        user.card_no = encrypt(form.card_no.data)
+        user.card_exp_month = encrypt(form.card_expiry_month.data)
+        user.card_exp_year = encrypt(form.card_expiry_year.data)
 
         db.session.commit()
         flash(f'card info has been edited', 'info')
