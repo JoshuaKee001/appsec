@@ -2,6 +2,7 @@ from hashlib import new
 from sre_constants import CH_LOCALE
 import os
 import pyqrcode
+import datetime
 from io import BytesIO
 from flask import (
     Flask,
@@ -36,7 +37,7 @@ from flask_login import (
 )
 
 from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles, f
-from models import User, Product
+from models import User, Product, graph, feedback
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditEmailForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
     Login2Form, FiltersAndSorting, AccountListSearchForm, EditNameForm
@@ -44,6 +45,7 @@ from functions import send_password_reset_email, send_ban_email, send_unban_emai
     allowed_file, ALLOWED_EXTENSIONS, encrypt, decrypt
 
 
+# done by joshua
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -548,6 +550,9 @@ def edit_product():
 def staffaccountlist(page=1):
     form = AccountListSearchForm()
     user_list = User.query.filter_by(role=None).all()
+    if form.validate_on_submit():
+        search = form.search.data
+        return redirect(url_for('staffaccountlist_search', search=search))
 
     return render_template('user/staff/staffaccountlist_2.html', form=form, user_list=user_list, page=page)
 
@@ -558,8 +563,39 @@ def staffaccountlist(page=1):
 def stafflist(page=1):
     form = AccountListSearchForm()
     staff_list = User.query.filter_by(role='admin').all()
+    if form.validate_on_submit():
+        search = form.search.data
+        return redirect(url_for('stafflist_search', search=search))
 
     return render_template('user/staff/stafflist2.html', form=form, staff_list=staff_list, page=page)
+
+
+@app.route('/staffaccountlist/search/<search>', methods=["GET", "POST"])  # list member accounts
+@login_required
+@required_roles('admin')
+def staffaccountlist_search(search):
+    form = AccountListSearchForm()
+    user_list = User.query.filter_by(role=None).all()
+    filtered_user_list = []
+    for user in user_list:
+        if search in user.username:
+            filtered_user_list.append(user)
+
+    return render_template('user/staff/staffaccountlist_2.html', form=form, user_list=filtered_user_list, page=1)
+
+
+@app.route('/stafflist/search/<search>', methods=["GET", "POST"])  # list staff accounts
+@login_required
+@required_roles('admin')
+def stafflist_search(search):
+    form = AccountListSearchForm()
+    staff_list = User.query.filter_by(role='admin').all()
+    filtered_staff_list = []
+    for staff in staff_list:
+        if search in staff.username:
+            filtered_staff_list.append(staff)
+
+    return render_template('user/staff/stafflist2.html', form=form, staff_list=filtered_staff_list, page=1)
 
 
 @app.route('/deletestaff/<id>', methods=["GET", "POST"])
@@ -706,6 +742,7 @@ def search():
         products = Product.query.paginate(page=page, per_page=8)
 
     return render_template('user/guest/joshua/GuestStore/search.html', products=products, form=form)
+# done by joshua end
 
 
 @app.route('/view_product', methods=["GET", "POST"])
