@@ -1539,21 +1539,52 @@ def feedform():
           user = current_user
 
           tday = str(datetime.today())
+          excluded_chars = "*?!'^+%&/()=}][{$#"
+          appointment = False
+
+          ema = form.email.data.lower()
+          sub = form.subject.data.lower()
+          descrip = form.description.data.lower()
 
 
-          FEform = feedback(
-          username = user.username,
-          date = tday ,
-          email = form.email.data.lower(),
-          subject = form.subject.data.lower(),
-          description = form.description.data.lower())
 
-          db.session.add(FEform)
-          db.session.commit()
 
-          return redirect(url_for('fb_submit'))
+
+          if excluded_chars in ema:
+                appointment = False
+                raise ValidationError
+
+          else:
+                appintment = True
+          if excluded_chars in sub:
+                appointment = False
+                raise ValidationError
+
+          else:
+                appointment = False
+          if excluded_chars in descrip:
+                appointment = False
+                raise ValidationError
+
+          else:
+                appointment = False
+
+          if appointment == True:
+
+
+              FEform = feedback(
+              username = user.username,
+              date = tday ,
+              email = form.email.data.lower(),
+              subject = form.subject.data.lower(),
+              description = form.description.data.lower())
+
+              db.session.add(FEform)
+              db.session.commit()
+
+              return redirect(url_for('fb_submit'))
       else:
-        return render_template('user/guest/alisa/feedback.html', usersession = True, form = form,  contactactive = True)
+        return render_template('user/guest/alisa/feedback.html', usersession = True, form = form)
 
     else:
         return redirect(url_for('login'))
