@@ -27,8 +27,9 @@ class User(UserMixin, db.Model):
 
     role = db.Column(db.String(20))
     age = db.Column(db.String(3))
-    first_name = db.Column(db.String(30))
-    last_name = db.Column(db.String(40))
+    first_name = db.Column(db.LargeBinary)
+    last_name = db.Column(db.LargeBinary)
+
     gender = db.Column(db.String(10))
     date_joined = db.Column(db.String(50))
     doc = db.Column(db.String(60), unique=False)
