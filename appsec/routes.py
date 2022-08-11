@@ -60,6 +60,14 @@ def session_handler():
     app.permanent_session_lifetime = timedelta(minutes=30)
 
 
+@app.after_request
+def add_header(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     return render_template("home.html")
@@ -1060,7 +1068,7 @@ def News():
 
 
         return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = False, newsactive = True  )
-"""
+
 @app.route('/UpGraphform', methods=['GET', 'POST'])
 def UpGraphform():
     print("1")
@@ -1668,7 +1676,7 @@ def help():
 @app.route('/feedback_submit', methods=["GET", "POST"])
 def fb_submit():
     return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
-"""
+
 
 if __name__ == "__main__":
     app.run(debug=True)
