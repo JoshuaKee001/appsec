@@ -166,6 +166,7 @@ font-size:1.1em;
       {# wtf.form_field(form.remarks, class="form-control") #}
       {{ render_field(form.remarks, class="form-control") }}
     </div>
+        {% if appointment  %}<div class="text-danger"><span id="error">The Doctor for this date and time is unavailable</span></div>{% endif %}
 
   </div>
   <form action="retrieveConsultation">
@@ -197,8 +198,6 @@ font-size:1.1em;
            document.getElementById("img").width = "400";
            document.getElementById("img").height = "400";
            document.getElementById("result").style.fontSize ="1.5em"
-
-
 
         }
 
@@ -235,3 +234,6 @@ font-size:1.1em;
 
 </script>
 
+</div>
+  </form>
+</div>

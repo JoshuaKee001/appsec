@@ -40,12 +40,13 @@
       <tbody>
 
         <tr>
-          {% for consult in consultation %}
+          {% for consult, name in zip(consultation,namelist) %}
+
 
           <td> {{ consult.id }}</td>
           <td>{{ consult.username }}</td>
-          <td>{{ consult.first_name }}</td>
-          <td>{{ consult.last_name }}</td>
+          <td>{{ name }} </td>
+
           <td>{{ consult.email }}</td>
           {% if consult.consultstate == True %}
           <td>Yes</td>
@@ -71,7 +72,7 @@
           <td>Dr Lim</td>
 
           {% else %}
-          <td>none </td>
+          <td> </td>
 
           {% endif %}
           {% if consult.doc == "t"%}
@@ -88,7 +89,7 @@
           <td>Zoom link</td>
 
           {% else %}
-          <td>none </td>
+          <td> </td>
 
           {% endif %}
 
@@ -99,7 +100,7 @@
 
 
 
-          <td><a href="" class="btn btn-warning">Update</a></td>
+
           <td>
 
 
@@ -158,9 +159,7 @@
       </tbody>
     </table>
   </div>
-  <div class="row">
-    <div class="col"> <a class="btn btn-success" href="/createConsultation">Create An Appointment</a> </div>
-  </div>
+
     {% endblock %}
 </div>
 
