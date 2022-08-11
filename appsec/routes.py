@@ -40,7 +40,7 @@ from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, requi
 from models import User, Product, graph, feedback
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditEmailForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
-    Login2Form, FiltersAndSorting, AccountListSearchForm, EditNameForm
+    Login2Form, FiltersAndSorting, AccountListSearchForm, EditNameForm, AddressForm
 from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email, \
     allowed_file, ALLOWED_EXTENSIONS, encrypt, decrypt
 
@@ -697,7 +697,7 @@ def usercard():
         user.card_exp_year = encrypt(form.card_expiry_year.data)
 
         db.session.commit()
-        flash(f'card info has been edited', 'info')
+        flash(f'card info has been updated', 'info')
         return redirect(url_for('user'))
 
     return render_template('user/loggedin/user_cardinfo.html', form=form)
@@ -715,6 +715,53 @@ def deletecard():
 
     db.session.commit()
     flash(f'card info has been deleted', 'info')
+
+    return redirect(url_for('user'))
+
+
+@app.route('/useraddress', methods=["GET", "POST"])
+@login_required
+def useraddress():
+    form = AddressForm()
+    if request.method == 'GET' and current_user.shipping_address is not None:
+        user = current_user
+        form.shipping_address.data = user.shipping_address
+        form.postal_code.data = user.postal_code
+
+        unit_no = user.unit_no
+        unit_no.replace('#', '')
+        unit_no1 = unit_no.split('-')[0]
+        unit_no2 = unit_no.split('-')[1]
+
+        form.unit_number1.data = unit_no1
+        form.unit_number2.data = unit_no2
+        form.phone_no.data = user.phone_no
+
+    if form.validate_on_submit():
+        user = current_user
+        user.shipping_address = form.shipping_address.data
+        user.postal_code = form.postal_code.data
+        user.unit_no = '#' + str(form.unit_number1.data) + '-' + str(form.unit_number2.data)
+        user.phone_no = form.phone_no.data
+
+        db.session.commit()
+        flash(f'address has been updated', 'info')
+        return redirect(url_for('user'))
+
+    return render_template('user/loggedin/user_address.html', form=form)
+
+
+@app.route('/deleteaddress', methods=["GET", "POST"])
+@login_required
+def deleteaddress():
+    user = current_user
+    user.shipping_address = None
+    user.postal_code = None
+    user.unit_no = None
+    user.phone_no = None
+
+    db.session.commit()
+    flash(f'address info has been deleted', 'info')
 
     return redirect(url_for('user'))
 
@@ -1013,7 +1060,7 @@ def News():
 
 
         return render_template('user/guest/xuzhi/News.html',labels = labels, values = values, staffsession = False, newsactive = True  )
-
+"""
 @app.route('/UpGraphform', methods=['GET', 'POST'])
 def UpGraphform():
     print("1")
@@ -1621,7 +1668,7 @@ def help():
 @app.route('/feedback_submit', methods=["GET", "POST"])
 def fb_submit():
     return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
-
+"""
 
 if __name__ == "__main__":
     app.run(debug=True)

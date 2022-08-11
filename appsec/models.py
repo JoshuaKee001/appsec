@@ -46,6 +46,11 @@ class User(UserMixin, db.Model):
     banned = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     verified = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
 
+    shipping_address = db.Column(db.String(500))
+    postal_code = db.Column(db.String(500))
+    unit_no = db.Column(db.String(500))
+    phone_no = db.Column(db.String(500))
+
     def __repr__(self):
         return '<User %r>' % self.username
 

@@ -155,6 +155,14 @@ class CardInfoForm(FlaskForm):
             return False
 
 
+class AddressForm(FlaskForm):
+    shipping_address = StringField('', validators=[InputRequired()])
+    postal_code = IntegerField("", validators=[InputRequired()])
+    unit_number1 = IntegerField("", validators=[InputRequired()])
+    unit_number2 = IntegerField("", validators=[InputRequired()])
+    phone_no = IntegerField("", validators=[InputRequired()])
+
+
 class Quantity(FlaskForm):
     quantity = IntegerField("Quantity:", [validators.DataRequired()])
 

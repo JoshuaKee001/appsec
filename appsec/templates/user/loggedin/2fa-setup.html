@@ -14,7 +14,8 @@
 
 <h1>Two Factor Authentication Setup</h1>
 <p>Download FreeOTP on your smartphone and scan the following QR Code with it:</p>
-<p><img id="qrcode" src="{{ url_for('qrcode') }}"></p>
+<button class="btn btn-dark"><a href="/qrcode" target="_blank" style="color: #FFFFFF;">Open Qr Code</a></button>
+<br>
 
 {% if current_user.two_factor_enabled %}
 <p>Done? click here to enable 2fa from your next login onwards</p>

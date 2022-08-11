@@ -182,7 +182,7 @@
                   </div>
                </form>
                <br style="clear:both;">
-               {% if name.role is none %}
+               {% if name.role == None %}
                <div class="d-flex flex-column align-items-center text-center">
                   <img src="static/uploads/{{ name.pfpfilename }}" class="rounded-circle" width="150" height="150">
                   <div class="mt-3">
@@ -321,42 +321,67 @@
                         <div class="col-sm-3">
                            <h6 class="mb-0">Shipping Address</h6>
                         </div>
+                        {% if name.shipping_address == None %}
                         <div class="col-sm-9 text-secondary">
-
+                           None
                         </div>
+                        {% else %}
+                        <div class="col-sm-9 text-secondary">
+                           Blk {{ name.shipping_address }}
+                        </div>
+                        {% endif %}
                      </div>
                      <hr>
                      <div class="row">
                         <div class="col-sm-3">
                            <h6 class="mb-0">Unit Number</h6>
                         </div>
+                        {% if name.unit_no == None %}
                         <div class="col-sm-9 text-secondary">
-
+                           None
                         </div>
+                        {% else %}
+                        <div class="col-sm-9 text-secondary">
+                           {{ name.unit_no }}
+                        </div>
+                        {% endif %}
                      </div>
                      <hr>
                      <div class="row">
                         <div class="col-sm-3">
                            <h6 class="mb-0">Postal Code</h6>
                         </div>
+                        {% if name.postal_code == None %}
                         <div class="col-sm-9 text-secondary">
-
+                           None
                         </div>
+                        {% else %}
+                        <div class="col-sm-9 text-secondary">
+                           (s){{ name.postal_code }}
+                        </div>
+                        {% endif %}
                      </div>
                      <hr>
                      <div class="row">
                         <div class="col-sm-3">
                            <h6 class="mb-0">Phone Number</h6>
                         </div>
+                        {% if name.phone_no == None %}
                         <div class="col-sm-9 text-secondary">
-
+                           None
                         </div>
+                        {% else %}
+                        <div class="col-sm-9 text-secondary">
+                           +65 {{ name.phone_no }}
+                        </div>
+                        {% endif %}
                      </div>
                      <hr>
                      <div class="row">
                         <div class="col-sm-12">
                            <a class="btn btn-info " href="/useraddress">Edit</a>
                            <form action="/deleteaddress" method="POST">
+                              {{ form.csrf_token }}
                               <!--input type="submit" value="Delete" class="btn btn-danger"-->
 
                               <!-- w3 schools modal button-->
