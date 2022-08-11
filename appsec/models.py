@@ -18,7 +18,6 @@ class User(UserMixin, db.Model):
     pfpfilename = db.Column(db.String(85))
     two_factor_enabled = db.Column(db.Boolean, nullable=False, default=False, server_default=db.false())
     otp_secret = db.Column(db.String(32))
-    
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -38,8 +37,6 @@ class User(UserMixin, db.Model):
     time = db.Column(db.String(30))
     remarks = db.Column(db.String(30))
     consultstate = db.Column(db.Boolean)
-    
-    
 
     card_name = db.Column(db.String(300))
     card_no = db.Column(db.String(300))
@@ -86,8 +83,7 @@ class Product(db.Model):
     long_description = db.Column(db.String(3000))
     stock = db.Column(db.Integer)
     
-    
-    
+
 class graph(db.Model):
     __tablename__ = 'graph'
 
