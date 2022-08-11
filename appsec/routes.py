@@ -1208,19 +1208,32 @@ def retrieveConsultation():
           test = user
           print('test' ,test )
           empty = " "
-          consultation = user.query.all()
+          consultation = user.query.filter(user.role != "admin")
           f = []
           L = []
+          namelist = []
+          keylist = []
+
+
           for i in consultation:
-              f.append(i.first_name)
-              L.append(i.last_name)
+
+                key = i.ferkey
+
+                fernet  = Fernet(key)
+                finam = i.first_name
+                lanam = i.last_name
+
+
+                first =  fernet.decrypt(finam).decode()
+                last = fernet.decrypt(lanam).decode()
+                f.append(first)
+                L.append(last)
+                namelist.append(first + ' ' + last )
 
 
 
 
-
-
-          return render_template('user/guest/xuzhi/retrieveConsultationAd.html',form = form, consultation = consultation, flist = f, llist = L)
+          return render_template('user/guest/xuzhi/retrieveConsultationAd.html',form = form, consultation = consultation, flist = f, llist = L, namelist = namelist, zip = zip )
 
 
 
@@ -1240,7 +1253,15 @@ def retrieveConsultation():
             info = user.query.filter_by(id=user.id).first()
             if info.consultstate == True:
                 print("All Good ")
-                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=1,  consultactive = True, info = info, form = form )
+                key = info.ferkey
+                fernet  = Fernet(key)
+                finam = info.first_name
+                lanam = info.last_name
+
+
+                first =  fernet.decrypt(finam).decode()
+                last = fernet.decrypt(lanam).decode()
+                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=1,  consultactive = True, info = info, form = form, first = first, last = last )
 
 
 
@@ -1253,7 +1274,7 @@ def retrieveConsultation():
                 info.time = empty
                 info.remarks = empty
 
-                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=0,  consultactive = True, info = info, form = form )
+                return render_template('user/guest/xuzhi/retrieveConsultation.html', count=0,  consultactive = True, info = info, form = form, first = empty, last = empty )
         else:
             session.clear()
 
@@ -1265,8 +1286,6 @@ def retrieveConsultation():
 
         return redirect(url_for('login'))
 
-
-'''shift down FOR  down '''
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     form = createConsultationForm()
@@ -1298,15 +1317,6 @@ def create_consultation():
             time = form.time.data.lower()
 
             excluded_chars = "*?!'^+%&/()=}][{$#"
-
-
-
-
-
-
-
-
-
 
             all = user.query.all()
 
@@ -1346,6 +1356,9 @@ def create_consultation():
             else:
                 appointment = False
                 raise ValidationError
+
+
+
             for i in all:
 
 
@@ -1381,11 +1394,27 @@ def create_consultation():
 
 
             if appointment == True:
+
+              key = Fernet.generate_key()
+              fernet = Fernet(key)
+
               print("hey ")
               appoint.user = id
               appoint.consultstate = True
-              appoint.first_name = form.first_name.data.lower()
-              appoint.last_name = form.last_name.data.lower()
+              fnam = form.first_name.data.lower()
+
+              Efname = fernet.encrypt(fnam.encode())
+
+              lnam = form.last_name.data.lower()
+
+              Elname = fernet.encrypt(lnam.encode())
+              print(Efname)
+              print(Elname)
+
+              appoint.ferkey = key
+
+              appoint.first_name =Efname
+              appoint.last_name = Elname
               appoint.date_joined = form.date_joined.data
               appoint.gender = form.gender.data.lower()
               appoint.doc = form.doc.data.lower()
@@ -1399,12 +1428,11 @@ def create_consultation():
 
 
 
-              info = user.query.filter_by(first_name=form.first_name.data.lower()).first()
-              print(i)
-              print('info',info)
 
 
-              return render_template('user/guest/xuzhi/retrieveConsultation.html', count =1, consultactive = True, info = info, form = form )
+              return redirect(url_for('retrieveConsultation'))
+
+
 
             else:
                print('Danger! Error!')
@@ -1452,11 +1480,19 @@ def delete_consultation():
 
       print("deleting ")
       empty = " "
+      empty = " "
+      byte = b''
+
+
+
+      appoint.key = byte
+      appoint.user = id
+
 
       appoint.user = id
       appoint.consultstate = False
-      appoint.first_name = empty
-      appoint.last_name = empty
+      appoint.first_name = byte
+      appoint.last_name = byte
       appoint.date_joined = empty
       appoint.gender = empty
       appoint.doc = empty
@@ -1469,6 +1505,10 @@ def delete_consultation():
 
     else:
         return redirect(url_for('login'))
+
+@app.route('/help', methods=['GET', 'POST'])
+def help():
+    return render_template('user/guest/alisa/help.html')
 
 
 @app.post('/<int:user_id>/delete/')
@@ -1487,11 +1527,15 @@ def delete_consultationAd(user_id):
 
       print("deleting ")
       empty = " "
+      byte = b''
 
+
+
+      appoint.key = byte
       appoint.user = id
       appoint.consultstate = False
-      appoint.first_name = empty
-      appoint.last_name = empty
+      appoint.first_name = byte
+      appoint.last_name = byte
       appoint.date_joined = empty
       appoint.gender = empty
       appoint.doc = empty
@@ -1501,12 +1545,14 @@ def delete_consultationAd(user_id):
       db.session.commit()
       return redirect(url_for('retrieveConsultation' ))
 
+
      else:
          return redirect(url_for('login'))
 
 
     else:
         return redirect(url_for('login'))
+
 
 
 @app.route('/stafffeed/1', methods=["GET", "POST"])
@@ -1666,10 +1712,6 @@ def Vac():
 def Background():
     return render_template('user/guest/xuzhi/Background.html')
 
-
-@app.route('/help')
-def help():
-    return render_template('user/guest/alisa/help.html')
 
 
 #feedback submit button
