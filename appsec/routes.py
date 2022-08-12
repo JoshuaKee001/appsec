@@ -1192,48 +1192,10 @@ def consultatioPg1():
 def retrieveConsultation():
     if current_user.is_authenticated:
 
-        users_dict ={}
-        db = User
-        UserName =  User.username
+
         form = createConsultationForm()
         if current_user.role == 'admin':
-          print('placeholder')
-
-
-          z=0
-          remarks = "Empty"
-          user = current_user
-          i = current_user.id
-          customers_list = User
-          test = user
-          print('test' ,test )
-          empty = " "
-          consultation = user.query.filter(user.role != "admin")
-          f = []
-          L = []
-          namelist = []
-          keylist = []
-
-
-          for i in consultation:
-
-                key = i.ferkey
-
-                fernet  = Fernet(key)
-                finam = i.first_name
-                lanam = i.last_name
-
-
-                first =  fernet.decrypt(finam).decode()
-                last = fernet.decrypt(lanam).decode()
-                f.append(first)
-                L.append(last)
-                namelist.append(first + ' ' + last )
-
-
-
-
-          return render_template('user/guest/xuzhi/retrieveConsultationAd.html',form = form, consultation = consultation, flist = f, llist = L, namelist = namelist, zip = zip )
+            return redirect('retrieveConsultationAd')
 
 
 
@@ -1285,6 +1247,65 @@ def retrieveConsultation():
     else:
 
         return redirect(url_for('login'))
+
+
+@app.route('/retrieveConsultationAd', methods=['GET', 'POST'])
+def retrieveConsultationAd():
+    if current_user.is_authenticated:
+
+        form = createConsultationForm()
+        if current_user.role == 'admin':
+          print('placeholder')
+
+
+          z=0
+          remarks = "Empty"
+          user = current_user
+          i = current_user.id
+          customers_list = User
+          test = user
+          print('test' ,test )
+          empty = " "
+          consultation = user.query.all()
+          f = []
+          L = []
+          namelist = []
+          keylist = []
+
+
+          for i in consultation:
+              if i.consultstate == True:
+
+                key = i.ferkey
+                fernet  = Fernet(key)
+                finam = i.first_name
+                lanam = i.last_name
+
+                first =  fernet.decrypt(finam).decode()
+                last = fernet.decrypt(lanam).decode()
+                print(first)
+                f.append(first)
+                L.append(last)
+                namelist.append(first + ' ' + last )
+              else:
+                  namelist.append("null")
+
+
+
+
+          return render_template('user/guest/xuzhi/retrieveConsultationAd.html',form = form, consultation = consultation, flist = f, llist = L, namelist = namelist, zip = zip )
+        else:
+            session.clear()
+
+
+            return redirect(url_for('home'))
+
+
+    else:
+
+        return redirect(url_for('login'))
+
+
 
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
