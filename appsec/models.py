@@ -37,7 +37,7 @@ class User(UserMixin, db.Model):
     time = db.Column(db.String(30))
     remarks = db.Column(db.String(30))
     consultstate = db.Column(db.Boolean)
-    failedaccess = db.Columen(db.Integer)
+    failedaccess = db.Column(db.Integer)
 
     card_name = db.Column(db.String(300))
     card_no = db.Column(db.String(300))
