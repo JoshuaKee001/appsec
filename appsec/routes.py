@@ -1496,15 +1496,16 @@ def create_consultation():
 
             else:
                print('Danger! Error!')
-               return render_template('user/guest/xuzhi/createConsultation.html', form = form)
-          
-              session.clear()
-              user = current_user
-              Cval = user.failedaccess
-              Nval = int(Cval) + 1
-              user.failedacess = Nval
 
-              db.session.commit()
+               session.clear()
+               user = current_user
+               Cval = user.failedaccess
+               Nval = int(Cval) + 1
+               user.failedacess = Nval
+
+               db.session.commit()
+
+               return render_template('user/guest/xuzhi/createConsultation.html', form = form)
 
 
 
