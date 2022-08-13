@@ -192,3 +192,21 @@ class FiltersAndSorting(FlaskForm):
 
 class AccountListSearchForm(FlaskForm):
     search = StringField("")
+
+    
+    
+class Gform(FlaskForm):
+
+
+    DATE1 = DateField('Date 1:', [validators.DataRequired()], format='%Y-%m-%d')
+    DATE2 = DateField('Date 2:', [validators.DataRequired()], format='%Y-%m-%d')
+    DATE3 = DateField('Date 3:', [validators.DataRequired()], format='%Y-%m-%d')
+    DATE4 = DateField('Date 4:', [validators.DataRequired()], format='%Y-%m-%d')
+    DATE5 = DateField('Date 5:', [validators.DataRequired()], format='%Y-%m-%d')
+    COVID1 = DecimalField('DATE1 Cases:', [ validators.DataRequired()])
+    COVID2 = DecimalField('DATE2 Cases:', [ validators.DataRequired()])
+    COVID3 = DecimalField('DATE3 Cases:', [ validators.DataRequired()])
+    COVID4 = DecimalField('DATE4 Cases:', [ validators.DataRequired()])
+    COVID5 = DecimalField('DATE5 Cases:', [ validators.DataRequired()])
+
+
