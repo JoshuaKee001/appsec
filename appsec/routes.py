@@ -4,6 +4,7 @@ import os
 import pyqrcode
 import datetime
 from io import BytesIO
+from cryptography.fernet import Fernet
 from flask import (
     Flask,
     render_template,
@@ -40,10 +41,10 @@ from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, requi
 from models import User, Product, graph, feedback
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditEmailForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
-    Login2Form, FiltersAndSorting, AccountListSearchForm, EditNameForm, AddressForm
+    Login2Form, FiltersAndSorting, AccountListSearchForm, EditNameForm, AddressForm, Gform
 from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email, \
     allowed_file, ALLOWED_EXTENSIONS, encrypt, decrypt
-
+from wtforms import ValidationError
 
 # done by joshua
 @login_manager.user_loader
