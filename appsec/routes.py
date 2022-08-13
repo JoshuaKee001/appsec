@@ -128,18 +128,43 @@ def signup():
     form = SignUpForm()
     if form.validate_on_submit():
         try:
+            appointment = True
             username = form.username.data
             email = form.email.data.lower()
             password = form.password.data
-            consultstate = False  
 
-            newuser = User(username=username, email=email, password=bcrypt.generate_password_hash(password),
+            excluded_chars = "*?!'^+%&/()=}][{$#"
+
+
+
+
+            if excluded_chars in username:
+                appointment = False
+                raise ValidationError
+
+            else:
+                appintment = True
+            if excluded_chars in email:
+                appointment = False
+                raise ValidationError
+
+            else:
+                appointment = True
+
+
+            consultstate = False
+            if appointment == True:
+
+              newuser = User(username=username, email=email, password=bcrypt.generate_password_hash(password),
                            consultstate=consultstate, pfpfilename='default.png')
 
-            db.session.add(newuser)
-            db.session.commit()
-            flash(f"Account Succesfully created", "success")
-            return redirect(url_for("login"))
+              db.session.add(newuser)
+              db.session.commit()
+              flash(f"Account Succesfully created", "success")
+              return redirect(url_for("login"))
+
+            else:
+                return redirect(url_for('home'))
 
         except InvalidRequestError:
             db.session.rollback()
@@ -1197,11 +1222,7 @@ def retrieveConsultation():
         if current_user.role == 'admin':
             return redirect('retrieveConsultationAd')
 
-
-
-
         elif current_user.is_authenticated:
-
 
 
             z=0
@@ -1212,7 +1233,7 @@ def retrieveConsultation():
             test = user
             print('test' ,test )
             empty = " "
-            info = user.query.filter_by(id=user.id).first()
+            info = user.query.filter_by(id=user.id).limit(1).first()
             if info.consultstate == True:
                 print("All Good ")
                 key = info.ferkey
@@ -1239,7 +1260,6 @@ def retrieveConsultation():
                 return render_template('user/guest/xuzhi/retrieveConsultation.html', count=0,  consultactive = True, info = info, form = form, first = empty, last = empty )
         else:
             session.clear()
-
 
             return redirect(url_for('home'))
 
