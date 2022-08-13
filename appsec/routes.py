@@ -156,7 +156,7 @@ def signup():
             if appointment == True:
 
               newuser = User(username=username, email=email, password=bcrypt.generate_password_hash(password),
-                           consultstate=consultstate, pfpfilename='default.png')
+                           consultstate=consultstate, pfpfilename='default.png', failedaccess = 0)
 
               db.session.add(newuser)
               db.session.commit()
