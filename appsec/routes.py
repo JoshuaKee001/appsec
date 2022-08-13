@@ -1097,8 +1097,9 @@ def News():
 
 @app.route('/UpGraphform', methods=['GET', 'POST'])
 def UpGraphform():
-    print("1")
-    form = Gform()
+   print("1")
+   form = Gform()
+   if current_user.is_authenticated:
 
     if current_user.role == 'admin':
        print("Im here")
@@ -1109,12 +1110,7 @@ def UpGraphform():
            check = False
 
 
-
-
            if check != True:
-
-
-
 
 
             for gra in grap:
@@ -1144,14 +1140,21 @@ def UpGraphform():
 
 
     else:
-        return redirect(url_for('login'))
+        user = current_user
+        Cval = user.failedaccess
+        Nval = int(Cval) + 1
+        user.failedacess = Nval
+
+        return redirect(url_for('home'))
 
 @app.route('/Graphform', methods=['GET', 'POST'])
 def Graphform():
-    print("1")
-    form = Gform()
+    if current_user.is_authenticated:
+     print("1")
+     form = Gform()
 
-    if current_user.role == 'admin':
+
+     if current_user.role == 'admin':
        print("Im here")
 
        if form.validate_on_submit()  :
@@ -1192,9 +1195,18 @@ def Graphform():
               return redirect(url_for('home'))
        return render_template('user/guest/xuzhi/Graphform.html', form = form, staffsession = False)
 
+     else:
+        session.clear()
+        user = current_user
+        Cval = user.failedaccess
+        Nval = int(Cval) + 1
+        user.failedacess = Nval
+        db.session.commit()
 
     else:
         return redirect(url_for('login'))
+
+
 
 
 
@@ -1269,7 +1281,6 @@ def retrieveConsultation():
 
         return redirect(url_for('login'))
 
-
 @app.route('/retrieveConsultationAd', methods=['GET', 'POST'])
 def retrieveConsultationAd():
     if current_user.is_authenticated:
@@ -1317,6 +1328,12 @@ def retrieveConsultationAd():
           return render_template('user/guest/xuzhi/retrieveConsultationAd.html',form = form, consultation = consultation, flist = f, llist = L, namelist = namelist, zip = zip )
         else:
             session.clear()
+            user = current_user
+            Cval = user.failedaccess
+            Nval = int(Cval) + 1
+            user.failedacess = Nval
+
+            db.session.commit()
 
 
             return redirect(url_for('home'))
@@ -1457,11 +1474,16 @@ def create_consultation():
 
               appoint.first_name =Efname
               appoint.last_name = Elname
-              appoint.date_joined = form.date_joined.data
-              appoint.gender = form.gender.data.lower()
-              appoint.doc = form.doc.data.lower()
-              appoint.time = form.time.data.lower()
-              appoint.remarks = form.remarks.data.lower()
+              date = str(form.date_joined.data)
+              appoint.date_joined = date
+              gen = str(form.gender.data.lower())
+              appoint.gender = gen
+              doc = str(form.doc.data.lower())
+              appoint.doc = doc
+              time = str(form.time.data.lower())
+              appoint.time = time
+              rem = str(form.time.data.lower())
+              appoint.remarks = rem
 
 
               db.session.commit()
@@ -1479,6 +1501,14 @@ def create_consultation():
             else:
                print('Danger! Error!')
                return render_template('user/guest/xuzhi/createConsultation.html', form = form)
+          
+              session.clear()
+              user = current_user
+              Cval = user.failedaccess
+              Nval = int(Cval) + 1
+              user.failedacess = Nval
+
+              db.session.commit()
 
 
 
@@ -1731,6 +1761,29 @@ def feedform():
 
     else:
         return redirect(url_for('login'))
+
+    
+@app.route('/securitycheck', methods=['GET', 'POST'])
+def securitycheck():
+    if current_user.is_authenticated:
+        user = current_user
+        if current_user.role == "admin":
+
+
+            use = user.query.all()
+            return render_template("user/staff/Security.html", use = use)
+
+        else:
+          session.clear()
+
+          Cval = user.failedaccess
+          Nval = int(Cval) + 1
+          user.failedacess = Nval
+
+          db.session.commit()
+          return redirect(url_for('home'))
+    else:
+        return redirect(url_for('home'))
 
 
 
