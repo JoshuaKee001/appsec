@@ -1,6 +1,6 @@
-{% if staffsession %}
+{% if current_user.role == "admin" %}
 {% extends "admin_base.html" %}
-{% elif usersession %}
+{% elif current_user.is_authenticated %}
 {% extends "user_base.html" %}
 {% else %}
 {% extends "default_base.html" %}

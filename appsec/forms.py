@@ -1,5 +1,5 @@
 from wtforms import StringField, PasswordField, BooleanField, IntegerField, DateField, \
-    TextAreaField, SelectField, FloatField, EmailField, RadioField, SubmitField
+    TextAreaField, SelectField, FloatField, EmailField, RadioField, SubmitField, DecimalField
 from wtforms_components import DateRange
 from flask_wtf import FlaskForm
 from wtforms.validators import InputRequired, Length, EqualTo, Email, Regexp, Optional, NumberRange

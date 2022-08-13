@@ -950,13 +950,12 @@ def checkItems():
 def paymentDetails():
     form = CardInfoForm()
 
-    if request.method == 'GET':
+    if request.method == 'GET' and current_user.card_name is not None:
         user = current_user
         form.card_name.data = user.card_name
-        form.card_no.data = user.card_no
-        form.card_expiry_month.data = user.card_exp_month
-        form.card_expiry_year.data = user.card_exp_year
-        form.card_CVV.data = user.card_CVV
+        form.card_no.data = decrypt(user.card_no)
+        form.card_expiry_month.data = decrypt(user.card_exp_month)
+        form.card_expiry_year.data = decrypt(user.card_exp_year)
 
     if form.validate_on_submit():
         user = current_user
@@ -964,7 +963,6 @@ def paymentDetails():
         user.card_no = form.card_no.data
         user.card_exp_month = form.card_expiry_month.data
         user.card_exp_year = form.card_expiry_year.data
-        user.card_CVV = form.card_CVV.data
 
         db.session.commit()
         return redirect(url_for('shoppingComplete'))
@@ -988,9 +986,7 @@ def shoppingComplete():
             session.pop('total', None)
             return render_template('user/guest/alisa/shoppingComplete.html', usersession = True, cart = cart, total=total)
 
-@app.route('/consultatioPg1')
-def consultatioPg1():
-    return render_template('user/guest/xuzhi/consultatioPg1.html')
+
 @app.route('/News', methods=['GET', 'POST'])
 def News():
 
@@ -1647,10 +1643,6 @@ def retrievefeedback():
         return redirect(url_for('login'))
 
 
-
-@app.route('/feedback_submit', methods=["GET", "POST"])
-def fb_submit():
-    return render_template('user/guest/alisa/feedback_submit.html', usersession = True, contactactive = True)
 @app.post('/<int:user_id>/deleteFed/')
 def delete_feedback(user_id):
     n = user_id
