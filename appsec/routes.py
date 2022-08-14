@@ -1387,7 +1387,6 @@ def retrieveConsultationAd():
         return redirect(url_for('login'))
 
 
-
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     form = createConsultationForm()
@@ -1408,7 +1407,7 @@ def create_consultation():
 
 
 
-          try:
+          
             appointment = False
             fname = form.first_name.data.lower()
             lname = form.last_name.data.lower()
@@ -1557,29 +1556,13 @@ def create_consultation():
 
 
 
-          except InvalidRequestError:
-            db.session.rollback()
-            flash(f"Something went wrong!", "danger")
-          except IntegrityError:
-            db.session.rollback()
-            flash(f"User already exists!.", "warning")
-          except DataError:
-            db.session.rollback()
-            flash(f"Invalid Entry", "warning")
-          except InterfaceError:
-            db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
-          except DatabaseError:
-            db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
-          except BuildError:
-            db.session.rollback()
-            flash(f"An error occured !", "danger")
 
       return render_template('user/guest/xuzhi/createConsultation.html', form = form)
 
     else:
         return redirect(url_for('login'))
+
+
 
 
 
