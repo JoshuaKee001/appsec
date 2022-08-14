@@ -858,6 +858,7 @@ def view_product():
 
 @app.route('/cart',methods=['GET', 'POST'])
 def cart():
+    form = EmptyForm()
     if current_user.is_authenticated:
         if "cart" in session:
             total = 0
@@ -870,7 +871,7 @@ def cart():
 
             session["total"] = total
             noitem = len(cart)
-            return render_template('user/guest/cart_feedback/cart.html', usersession = True, cart = cart, products = products, total = total, num = noitem)
+            return render_template('user/guest/cart_feedback/cart.html', usersession = True, cart = cart, products = products, total = total, num = noitem, form=form)
         else:
             empty = True
             return render_template('user/guest/cart_feedback/cart.html',empty = empty)
@@ -941,6 +942,7 @@ def checkItems():
 @app.route('/shippingAddress', methods=["GET", "POST"])
 def shippingAddress():
     form = AddressForm()
+
     if request.method == 'GET' and current_user.shipping_address is not None:
         user = current_user
         form.shipping_address.data = user.shipping_address
