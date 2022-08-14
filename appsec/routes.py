@@ -930,11 +930,12 @@ def minusprod(id):
 
 @app.route('/checkItems', methods=['GET','POST'])
 def checkItems():
+    form = EmptyForm()
     if "cart" in session:
         cart = session["cart"]
         products = Product.query.all()
         noitem = len(cart)
-        return render_template('user/guest/alisa/checkItems.html', usersession = True, cart = cart, products = products, num = noitem)
+        return render_template('user/guest/alisa/checkItems.html', usersession = True, cart = cart, products = products, num = noitem, form=form)
     else:
         empty = True
         return render_template('user/guest/cart_feedback/cart.html', usersession = True, empty = empty)
