@@ -524,18 +524,17 @@ def create_product():
     return render_template('user/staff/joshua/StaffInventory/CRUDProducts/create_product.html', form=form)
 
 
-@app.route('/edit_product', methods=["GET", "POST"])
+@app.route('/edit_product/<id>', methods=["GET", "POST"])
 @login_required
 @required_roles('admin')
-def edit_product():
-    id = request.args.get('id')
-    product = Product.query.filter(Product.id.contains(id)).first()
+def edit_product(id):
+    product = Product.query.filter_by(id=id).first()
     form = CreateProductForm(request.form)
 
     if request.method == 'POST' and form.validate_on_submit():
         if "productPic" not in request.files:
             flash(f'no file sent', 'info')
-            return redirect(url_for("create_product"))
+            return redirect(url_for("edit_product", id=id))
 
         file = request.files['productPic']
         filename = file.filename
@@ -548,10 +547,10 @@ def edit_product():
                 file.save(filepath)
             else:
                 flash(f'Image not correct format', 'warning')
-                return redirect(url_for('create_product'))
+                return redirect(url_for('edit_product', id=id))
         else:
             flash(f'No file inputted', 'info')
-            return redirect(url_for('create_product'))
+            return redirect(url_for('edit_product', id=id))
         product.name = form.name.data
         product.price = form.price.data
         product.category = form.category.data
@@ -843,8 +842,38 @@ def search():
     else:
         products = Product.query.paginate(page=page, per_page=8)
 
+    if request.method == "POST":
+
+        if form.Medicine_category.data == True:
+            products = Product.query.filter(Product.category.contains("Medicine")).paginate(page=page, per_page=8)
+
+        if form.TestKit_category.data == True:
+            products = Product.query.filter(Product.category.contains("Test Kit")).paginate(page=page, per_page=8)
+
+        if form.Supplement_category.data == True:
+            products = Product.query.filter(Product.category.contains("Supplement")).paginate(page=page, per_page=8)
+
+        if form.FirstAid_category.data == True:
+            products = Product.query.filter(Product.category.contains("First Aid")).paginate(page=page, per_page=8)
+
+        if form.sorting_methods == "Price (Descending)":
+            products = Product.query.order_by(Product.price.desc()).paginate(page=page, per_page=8)
+
+        if form.sorting_methods == "Price (Ascending)":
+            products = Product.query.order_by(Product.price.asc()).paginate(page=page, per_page=8)
+
+        if form.sorting_methods == "Name (A to Z)":
+            products = Product.query.order_by(Product.name.asc()).paginate(page=page, per_page=8)
+
+        if form.sorting_methods == "Name (Z to A)":
+            products = Product.query.order_by(Product.name.desc()).paginate(page=page, per_page=8)
+        try:
+            products = Product.query.filter(form.price_range_lower.data < Product.price,
+                                            Product.price < form.price_range_upper.data).paginate(page=page, per_page=8)
+        except:
+            products = products
+
     return render_template('user/guest/joshua/GuestStore/search.html', products=products, form=form)
-# done by joshua end
 
 
 @app.route('/view_product', methods=["GET", "POST"])

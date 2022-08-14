@@ -310,6 +310,7 @@
 
                 {% if not user.verified %} <!-- if user.get_verified() == False -->
                 <form action="{{ url_for('verifyEmail', id=user.id) }}" method="POST" style="width:400px;">
+                  {{ form.csrf_token }}
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                     data-bs-target="#myModal_verify_{{ user.id }}">
                     Send Verification Email
