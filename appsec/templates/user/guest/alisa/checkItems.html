@@ -1,4 +1,10 @@
+{% if current_user.role == "admin" %}
+{% extends "admin_base.html" %}
+{% elif current_user.is_authenticated %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
+{% endif %}
 {% block head %}
 <link rel="stylesheet" href="static/CSS/alisa/checkItems.css">
 <link rel="stylesheet" href="static/CSS/cart.css">

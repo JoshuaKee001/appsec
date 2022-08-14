@@ -1,6 +1,6 @@
-{% if staffsession %}
+{% if current_user.role == "admin" %}
 {% extends "admin_base.html" %}
-{% elif usersession %}
+{% elif current_user.is_authenticated %}
 {% extends "user_base.html" %}
 {% else %}
 {% extends "default_base.html" %}
@@ -14,7 +14,7 @@
 
   }
 </style>
-<h1 class="display-4"> Shown appointments </h1>
+<h1 class="display-4"> Feedback </h1>
 
   <div class="table-responsive">
     <table class="table table-striped">

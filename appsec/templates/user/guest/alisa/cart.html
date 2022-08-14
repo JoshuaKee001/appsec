@@ -1,4 +1,10 @@
+{% if current_user.role == "admin" %}
+{% extends "admin_base.html" %}
+{% elif current_user.is_authenticated %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
+{% endif %}
 {% block head %}
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
