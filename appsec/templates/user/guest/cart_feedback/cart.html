@@ -55,44 +55,7 @@
 
                         <div class="col">${{product.price * cart.get(item)}}</div>
                         <div class="col">
-                            <form action="{{ url_for('removeprod', id = product.name) }}" method="POST">
-                                <!--input type="submit" value="Delete" class="btn btn-danger"-->
-
-                                <!-- w3 schools modal button-->
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#myModal_remove">
-                                    <span class="close">&#10005;</span>
-                                </button>
-
-                                <!-- The Modal -->
-                                <div class="modal" id="myModal_remove">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Removal Confirmation</h4>
-                                                <button type="button" class="btn-close"
-                                                    data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <!-- Modal body -->
-                                            <div class="modal-body">
-                                                Are you sure you want to remove this item?
-                                            </div>
-
-                                            <!-- Modal footer -->
-                                            <div class="modal-footer">
-                                                <input type="submit" value="Remove" class="btn btn-danger">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Cancel</button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </form>
+                            <a href="{{ url_for('removeprod', id = product.name) }}"><span class="btn btn-danger">&#10005;</span></a>
                         </div>
                         {% endif %}
                         {% endfor %}

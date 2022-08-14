@@ -831,9 +831,9 @@ def view_product():
     not_enough = False
     id = request.args.get('id')
     products = Product.query.filter(Product.id.contains(id))
-    quantity_form = Quantity(request.form)
+    quantity_form = Quantity()
     if request.method == "POST" and quantity_form.validate_on_submit():
-        if"cart" in session:
+        if "cart" in session:
             cart = session["cart"]
             for s in products:
                 if quantity_form.quantity.data <= s.stock:
@@ -859,13 +859,6 @@ def view_product():
 @app.route('/cart',methods=['GET', 'POST'])
 def cart():
     if current_user.is_authenticated:
-        # users_dict = db['Users']
-        # db["Users"] = users_dict
-
-        # need to figure out how to store & retrieve user purchases
-        # purchases = users_dict[idNumber].get_purchases()
-        # db.close()
-
         if "cart" in session:
             total = 0
             cart = session["cart"]
@@ -902,9 +895,10 @@ def cart():
 
 #remove product from cart
 @app.route('/removeprod/<id>',methods=['GET', 'POST'])
-def removeprod():
+def removeprod(id):
     cart = session["cart"]
     cart.pop(id)
+
     if len(cart) == 0:
         session.pop("cart", None)
     else:
@@ -944,18 +938,46 @@ def checkItems():
         empty = True
         return render_template('user/guest/cart_feedback/cart.html', usersession = True, empty = empty)
 
+@app.route('/shippingAddress', methods=["GET", "POST"])
+def shippingAddress():
+    form = AddressForm()
+    if request.method == 'GET' and current_user.shipping_address is not None:
+        user = current_user
+        form.shipping_address.data = user.shipping_address
+        form.postal_code.data = user.postal_code
+
+        unit_no = user.unit_no
+        unit_no.replace('#', '')
+        unit_no1 = unit_no.split('-')[0]
+        unit_no2 = unit_no.split('-')[1]
+
+        form.unit_number1.data = unit_no1
+        form.unit_number2.data = unit_no2
+        form.phone_no.data = user.phone_no
+
+    if form.validate_on_submit():
+        user = current_user
+        user.shipping_address = form.shipping_address.data
+        user.postal_code = form.postal_code.data
+        user.unit_no = '#' + str(form.unit_number1.data) + '-' + str(form.unit_number2.data)
+        user.phone_no = form.phone_no.data
+
+        db.session.commit()
+        return redirect(url_for('paymentDetails'))
+
+    return render_template('user/guest/alisa/user/guest/alisa/guest_ShippingAddress.html', form = form)
+
 
 @app.route('/paymentDetails', methods=["GET", "POST"])
-@login_required
 def paymentDetails():
     form = CardInfoForm()
 
     if request.method == 'GET' and current_user.card_name is not None:
         user = current_user
         form.card_name.data = user.card_name
-        form.card_no.data = decrypt(user.card_no)
-        form.card_expiry_month.data = decrypt(user.card_exp_month)
-        form.card_expiry_year.data = decrypt(user.card_exp_year)
+        form.card_no.data = user.card_no
+        form.card_expiry_month.data = user.card_exp_month
+        form.card_expiry_year.data = user.card_exp_year
 
     if form.validate_on_submit():
         user = current_user
@@ -967,7 +989,7 @@ def paymentDetails():
         db.session.commit()
         return redirect(url_for('shoppingComplete'))
 
-    return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form)
+    return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form = form)
 
 @app.route('/shoppingComplete', methods=["GET","POST"])
 def shoppingComplete():
