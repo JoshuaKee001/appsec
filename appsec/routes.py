@@ -1390,7 +1390,9 @@ def retrieveConsultationAd():
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     form = createConsultationForm()
+    print("here1")
     if current_user.is_authenticated:
+      print('here2')
 
       user = current_user
       id = current_user.id
@@ -1406,8 +1408,8 @@ def create_consultation():
       if form.validate_on_submit()  :
 
 
+            print('here3')
 
-          
             appointment = False
             fname = form.first_name.data.lower()
             lname = form.last_name.data.lower()
@@ -1552,7 +1554,8 @@ def create_consultation():
                db.session.commit()
 
                return render_template('user/guest/xuzhi/createConsultation.html', form = form)
-
+      else:
+          print(form.errors)
 
 
 
