@@ -193,6 +193,7 @@ def signup():
 @login_required
 def logout():
     logout_user()
+    session.clear()
     return redirect(url_for("home"))
 
 
@@ -513,7 +514,8 @@ def create_product():
                           short_description=form.short_description.data,
                           long_description=form.long_description.data,
                           stock=form.stock.data,
-                          img_file_name=filename)
+                          img_file_name=filename,
+                          no_sold=0)
         db.session.add(product)
         db.session.commit()
         flash(f"Product has been added", "success")
@@ -578,6 +580,24 @@ def edit_product():
     return render_template('user/staff/joshua/StaffInventory/CRUDProducts/edit_product.html', product=product, form=form)
 
 
+@app.route('/staffprod', methods=["GET", "POST"])
+@login_required
+@required_roles('admin')
+def staffprod():
+    products = Product.query.all()
+    data = []
+    for product in products:
+        new = (product.name, product.no_sold)
+        data.append(new)
+
+    labels = [row[0] for row in data]
+    values = [row[1] for row in data]
+    current = datetime.date.today()
+    current = current.strftime("%d/%m/%Y %H:%M:%S")
+
+    return render_template('user/staff/staffproduct.html', labels=labels, values=values, current=current)
+
+
 @app.route('/staffaccountlist/<int:page>', methods=["GET", "POST"])  # list member accounts
 @login_required
 @required_roles('admin')
@@ -612,7 +632,7 @@ def staffaccountlist_search(search):
     user_list = User.query.filter_by(role=None).all()
     filtered_user_list = []
     for user in user_list:
-        if search in user.username:
+        if search in user.username or user.id:
             filtered_user_list.append(user)
 
     return render_template('user/staff/staffaccountlist_2.html', form=form, user_list=filtered_user_list, page=1)
@@ -626,7 +646,7 @@ def stafflist_search(search):
     staff_list = User.query.filter_by(role='admin').all()
     filtered_staff_list = []
     for staff in staff_list:
-        if search in staff.username:
+        if search in staff.username or staff.id:
             filtered_staff_list.append(staff)
 
     return render_template('user/staff/stafflist2.html', form=form, staff_list=filtered_staff_list, page=1)
@@ -763,7 +783,7 @@ def useraddress():
         form.postal_code.data = user.postal_code
 
         unit_no = user.unit_no
-        unit_no.replace('#', '')
+        unit_no = unit_no.replace('#', '')
         unit_no1 = unit_no.split('-')[0]
         unit_no2 = unit_no.split('-')[1]
 
@@ -950,7 +970,7 @@ def shippingAddress():
         form.postal_code.data = user.postal_code
 
         unit_no = user.unit_no
-        unit_no.replace('#', '')
+        unit_no = unit_no.replace('#', '')
         unit_no1 = unit_no.split('-')[0]
         unit_no2 = unit_no.split('-')[1]
 
@@ -977,17 +997,17 @@ def paymentDetails():
 
     if request.method == 'GET' and current_user.card_name is not None:
         user = current_user
-        form.card_name.data = user.card_name
-        form.card_no.data = user.card_no
-        form.card_expiry_month.data = user.card_exp_month
-        form.card_expiry_year.data = user.card_exp_year
+        form.card_name.data = decrypt(user.card_name)
+        form.card_no.data = decrypt(user.card_no)
+        form.card_expiry_month.data = decrypt(user.card_exp_month)
+        form.card_expiry_year.data = decrypt(user.card_exp_year)
 
     if form.validate_on_submit():
         user = current_user
-        user.card_name = form.card_name.data
-        user.card_no = form.card_no.data
-        user.card_exp_month = form.card_expiry_month.data
-        user.card_exp_year = form.card_expiry_year.data
+        user.card_name = encrypt(form.card_name.data)
+        user.card_no = encrypt(form.card_no.data)
+        user.card_exp_month = encrypt(form.card_expiry_month.data)
+        user.card_exp_year = encrypt(form.card_expiry_year.data)
 
         db.session.commit()
         return redirect(url_for('shoppingComplete'))
@@ -1005,6 +1025,7 @@ def shoppingComplete():
                 for s in products:
                     if i == s.name:
                         s.stock = s.stock - cart[i]
+                        s.no_sold += cart[i]
                         db.session.commit()
 
             session.pop('cart', None)

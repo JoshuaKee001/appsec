@@ -88,6 +88,7 @@ class Product(db.Model):
     short_description = db.Column(db.String(100))
     long_description = db.Column(db.String(3000))
     stock = db.Column(db.Integer)
+    no_sold = db.Column(db.Integer)
     
 
 class graph(db.Model):
