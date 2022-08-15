@@ -66,6 +66,12 @@ def add_header(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    # response.headers['Content-Security-Policy'] = 'default-src \'none\';' \
+    #                                               'script-src \'self\' cdn.jsdelivr.net code.jquery.com  netdna.bootstrapcdn.com;' \
+    #                                               'connect-src \'self\';' \
+    #                                               'img-src \'self\' avatars.dicebear.com https: data:;' \
+    #                                               'style-src \'self\' cdn.jsdelivr.net cdnjs.cloudflare.com netdna.bootstrapcdn.com;' \
+    #                                               'form-action \'self\';'
     return response
 
 
@@ -81,12 +87,36 @@ def login():
         return redirect(url_for('home'))
 
     form = LoginForm()
+    validate = False
+
 
     if form.validate_on_submit():
+
+     excluded_chars = "*?!'^+%&/()=}][{$#"
+
+
+     email = form.email.data.lower()
+     password = form.password.data
+     if excluded_chars in email:
+            validate = False
+            raise ValidationError
+
+     else:
+            validate = True
+
+     if excluded_chars in password:
+            validate = False
+            raise ValidationError
+
+     else:
+            validate = True
+
+
+     if validate == True:
         try:
             
-            user = User.query.filter_by(email=form.email.data.lower()).first()
-            if check_password_hash(user.password, form.password.data):
+            user = User.query.filter_by(email=email).first()
+            if check_password_hash(user.password, password):
                 if not user.banned:
                     if user.two_factor_enabled:
                         return redirect(url_for('login_2', username=user.username))
@@ -809,22 +839,22 @@ def useraddress():
                 raise ValidationError
 
             
-        if excluded_chars in postal_code:
+        if excluded_chars in str(postal_code):
                 validate = False
                 raise ValidationError
 
      
 
-        if excluded_chars in unit_no:
+        if excluded_chars in str(unit_no):
                 validate = False
                 raise ValidationError
 
               
-        if excluded_chars in unit_no2:
+        if excluded_chars in str(unit_no2):
                 validate = False
                 raise ValidationError
 
-        if excluded_chars in phoneno:
+        if excluded_chars in str(phoneno):
                 validate = False
                 raise ValidationError
            
@@ -978,7 +1008,7 @@ def cart():
                         total += cart.get(item) * product.price
             session["total"] = total
             noitem = len(cart)
-            return render_template('user/guest/cart_feedback/cart.html', cart = cart, products = products, total = total, num = noitem)
+            return render_template('user/guest/cart_feedback/cart.html', cart = cart, products = products, total = total, num = noitem, form=form)
 
         else:
             empty = True
@@ -1031,6 +1061,7 @@ def checkItems():
         return render_template('user/guest/cart_feedback/cart.html', usersession = True, empty = empty)
 
 @app.route('/shippingAddress', methods=["GET", "POST"])
+@login_required
 def shippingAddress():
     form = AddressForm()
 
@@ -1062,6 +1093,7 @@ def shippingAddress():
 
 
 @app.route('/paymentDetails', methods=["GET", "POST"])
+@login_required
 def paymentDetails():
     form = CardInfoForm()
 
@@ -1456,6 +1488,7 @@ def retrieveConsultationAd():
         return redirect(url_for('login'))
 
 
+'''shift down FOR  down '''
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     form = createConsultationForm()
@@ -1479,7 +1512,7 @@ def create_consultation():
 
             print('here3')
 
-            appointment = True
+            appointment = False
             fname = form.first_name.data.lower()
             lname = form.last_name.data.lower()
             date = form.date_joined.data
@@ -1497,22 +1530,24 @@ def create_consultation():
                 appointment = False
                 raise ValidationError
 
-
+            else:
+                appintment = True
             if excluded_chars in lname:
                 appointment = False
                 raise ValidationError
 
-
+            else:
+                appointment = False
 
             try :
                 datetime.strptime(date, '%Y-%m-%d')
-                
+                appointment = True
             except:
                 appointment = False
 
 
             if str(doc) == 't' or 't' or 'm' 'l':
-                i = "placeholder" 
+                appointment = True
 
 
             else:
@@ -1520,7 +1555,7 @@ def create_consultation():
                 raise ValidationError
 
             if  str(time) == '9.00am - 9.30am'  '10.00am - 10.30am' or '11.00am - 11.30am' or '12.00pm -12.30pm' or '3.00pm - 3.30pm' or '4.00pm - 4.30pm'  or  '5.00pm -5.30pm':
-                b = "placeholder"
+                appointment = True
 
 
             else:
@@ -1593,7 +1628,7 @@ def create_consultation():
               appoint.doc = doc
               time = str(form.time.data.lower())
               appoint.time = time
-              rem = str(form.time.data.lower())
+              rem = str(form.remarks.data.lower())
               appoint.remarks = rem
 
 
@@ -1621,8 +1656,7 @@ def create_consultation():
                db.session.commit()
 
                return render_template('user/guest/xuzhi/createConsultation.html', form = form)
-      else:
-          print(form.errors)
+
 
 
 
@@ -1631,6 +1665,7 @@ def create_consultation():
 
     else:
         return redirect(url_for('login'))
+
 
 
 
