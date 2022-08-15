@@ -27,13 +27,14 @@ class SignUpForm(FlaskForm):
     username = StringField("", validators=[
         InputRequired(),
         Length(3, 20, message="Please provide a valid name"),
-        Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0, "Usernames must have only letters, " "numbers, dots or underscores",),
+        Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0, "Usernames must have only letters, " "numbers, dots or underscores", ),
     ])
     email = StringField(validators=[InputRequired(), Email(), Length(1, 64)])
     password = PasswordField(validators=[
-        InputRequired(), 
+        InputRequired(),
         Length(8, 72),
-        Regexp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,72}$", 0, "Password not strong enough")
+        Regexp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,72}$", 0,
+               "Password not strong enough")
     ])
     password_confirm = PasswordField(validators=[
         InputRequired(),
@@ -53,13 +54,14 @@ class SignUpForm(FlaskForm):
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField(validators=[InputRequired(), Length(8, 72)])
     new_password = PasswordField(validators=[
-        InputRequired(), 
+        InputRequired(),
         Length(8, 72),
-        Regexp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,72}$", 0, "Password not strong enough")
+        Regexp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,72}$", 0,
+               "Password not strong enough")
     ])
     confirm_new_password = PasswordField(validators=[
-        InputRequired(), 
-        Length(8, 72), 
+        InputRequired(),
+        Length(8, 72),
         EqualTo("new_password", message="Passwords must match")
     ])
 
@@ -68,7 +70,7 @@ class EditNameForm(FlaskForm):
     new_username = StringField("", validators=[
         InputRequired(),
         Length(3, 20, message="Please provide a valid name"),
-        Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0, "Usernames must have only letters, " "numbers, dots or underscores",),
+        Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0, "Usernames must have only letters, " "numbers, dots or underscores", ),
     ])
 
     def validate_username(self, new_username):
@@ -92,7 +94,8 @@ class ResetPasswordForm(FlaskForm):
     new_password = PasswordField(validators=[
         InputRequired(),
         Length(8, 72),
-        Regexp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,72}$", 0, "Password not strong enough")
+        Regexp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,72}$", 0,
+               "Password not strong enough")
     ])
     confirm_new_password = PasswordField(validators=[
         InputRequired(),
@@ -100,27 +103,35 @@ class ResetPasswordForm(FlaskForm):
         EqualTo("new_password", message="Passwords must match")
     ])
 
-    
-    first_name = StringField('First Name', [validators.Length(min=1, max=150), validators.DataRequired(),AlphaSpace("Only Alphabets") ])
 
-    last_name = StringField('Last Name', [validators.Length(min=1, max=150), validators.DataRequired(), AlphaSpace("Only Alphabets")])
-    gender = SelectField('Gender', [validators.DataRequired()], choices=[('', 'Select'), ('F', 'Female'), ('M', 'Male')], default='')
-    date_joined = DateField('Date of appointment(YY-MM-DD)', format='%Y-%m-%d',validators=[DateRange(min=date.today())])
-    time = SelectField('Appointment time', [validators.DataRequired()], choices=[('9.00am - 9.30am','9.00am - 9.30am'),('10.00am - 10.30am', '10.00am - 10.30am'), ('11.00am - 11.30am', '11.00am - 11.30am'),('12.00pm -12.30pm','12.00pm -12.30pm'),('3.00pm - 3.30pm','3.00pm - 3.30pm'),('4.00pm - 4.30pm', '4.00pm - 4.30pm'),('5.00pm -5.30pm',' 5.00pm -5.30pm')], default = '9.00am - 9.30am')
+class createConsultationForm(FlaskForm):
+    first_name = StringField('First Name', [validators.Length(min=1, max=150), validators.DataRequired()])
+
+    last_name = StringField('Last Name', [validators.Length(min=1, max=150), validators.DataRequired()])
+    gender = SelectField('Gender', [validators.DataRequired()],
+                         choices=[('', 'Select'), ('F', 'Female'), ('M', 'Male')], default='')
+    date_joined = DateField('Date of appointment(YY-MM-DD)', format='%Y-%m-%d',
+                            validators=[DateRange(min=date.today())])
+    time = SelectField('Appointment time', [validators.DataRequired()],
+                       choices=[('9.00am - 9.30am', '9.00am - 9.30am'), ('10.00am - 10.30am', '10.00am - 10.30am'),
+                                ('11.00am - 11.30am', '11.00am - 11.30am'), ('12.00pm -12.30pm', '12.00pm -12.30pm'),
+                                ('3.00pm - 3.30pm', '3.00pm - 3.30pm'), ('4.00pm - 4.30pm', '4.00pm - 4.30pm'),
+                                ('5.00pm -5.30pm', ' 5.00pm -5.30pm')], default='9.00am - 9.30am')
     remarks = TextAreaField('Additional request', [validators.Optional()])
-    def validate_remarks(self, remarks ):
+
+    def validate_remarks(self, remarks):
         excluded_chars = "*?!'^+%&/()=}][{$#"
         for char in self.remarks.data:
             if char in excluded_chars:
                 raise ValidationError(
                     f"Character {char} is not allowed in username.")
 
-    doc=RadioField('Choice of doctor', choices=[('t', 'Dr Tan'), ('m', 'Dr Mok'), ('l', 'Dr Lim')], default='t')
-
+    doc = RadioField('Choice of doctor', choices=[('t', 'Dr Tan'), ('m', 'Dr Mok'), ('l', 'Dr Lim')], default='t')
 
 
 class CreateProductForm(FlaskForm):
-    categories = [('Medicine', 'Medicine'), ('Test Kit', 'Test Kit'), ('Supplement', 'Supplement'), ('First Aid', 'First Aid')]
+    categories = [('Medicine', 'Medicine'), ('Test Kit', 'Test Kit'), ('Supplement', 'Supplement'),
+                  ('First Aid', 'First Aid')]
     category = SelectField(u"Product Category", choices=categories)
 
     name = StringField("Product Name", validators=[InputRequired()])
@@ -177,7 +188,10 @@ class Quantity(FlaskForm):
 class FeedbackForm(FlaskForm):
     name = StringField("Name:", [validators.DataRequired()])
     email = EmailField('Email', [validators.Email(), validators.DataRequired()])
-    subject = SelectField('Subject', [validators.DataRequired()], choices=[('Website Design','Website Design'),('Website Functions','Website Functions'),('General','General'),('Content','Content'),('Copyright','Copyright'),('Others','Others')], default = 'General')
+    subject = SelectField('Subject', [validators.DataRequired()],
+                          choices=[('Website Design', 'Website Design'), ('Website Functions', 'Website Functions'),
+                                   ('General', 'General'), ('Content', 'Content'), ('Copyright', 'Copyright'),
+                                   ('Others', 'Others')], default='General')
     description = TextAreaField()
 
 
@@ -200,20 +214,15 @@ class FiltersAndSorting(FlaskForm):
 class AccountListSearchForm(FlaskForm):
     search = StringField("")
 
-    
-    
+
 class Gform(FlaskForm):
-
-
     DATE1 = DateField('Date 1:', [validators.DataRequired()], format='%Y-%m-%d')
     DATE2 = DateField('Date 2:', [validators.DataRequired()], format='%Y-%m-%d')
     DATE3 = DateField('Date 3:', [validators.DataRequired()], format='%Y-%m-%d')
     DATE4 = DateField('Date 4:', [validators.DataRequired()], format='%Y-%m-%d')
     DATE5 = DateField('Date 5:', [validators.DataRequired()], format='%Y-%m-%d')
-    COVID1 = DecimalField('DATE1 Cases:', [ validators.DataRequired()])
-    COVID2 = DecimalField('DATE2 Cases:', [ validators.DataRequired()])
-    COVID3 = DecimalField('DATE3 Cases:', [ validators.DataRequired()])
-    COVID4 = DecimalField('DATE4 Cases:', [ validators.DataRequired()])
-    COVID5 = DecimalField('DATE5 Cases:', [ validators.DataRequired()])
-
-
+    COVID1 = DecimalField('DATE1 Cases:', [validators.DataRequired()])
+    COVID2 = DecimalField('DATE2 Cases:', [validators.DataRequired()])
+    COVID3 = DecimalField('DATE3 Cases:', [validators.DataRequired()])
+    COVID4 = DecimalField('DATE4 Cases:', [validators.DataRequired()])
+    COVID5 = DecimalField('DATE5 Cases:', [validators.DataRequired()])
