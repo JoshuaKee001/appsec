@@ -1840,7 +1840,7 @@ def feedform():
       if form.validate_on_submit():
           user = current_user
 
-          tday = str(datetime.today())
+          tday = str(datetime.date.today())
           excluded_chars = "*?!'^+%&/()=}][{$#"
           appointment = True
 
