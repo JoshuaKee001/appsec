@@ -101,14 +101,22 @@ class ResetPasswordForm(FlaskForm):
     ])
 
     
-class createConsultationForm(FlaskForm):
-    first_name = StringField('First Name', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    last_name = StringField('Last Name', [validators.Length(min=1, max=150), validators.DataRequired()])
+    first_name = StringField('First Name', [validators.Length(min=1, max=150), validators.DataRequired(),AlphaSpace("Only Alphabets") ])
+
+    last_name = StringField('Last Name', [validators.Length(min=1, max=150), validators.DataRequired(), AlphaSpace("Only Alphabets")])
     gender = SelectField('Gender', [validators.DataRequired()], choices=[('', 'Select'), ('F', 'Female'), ('M', 'Male')], default='')
     date_joined = DateField('Date of appointment(YY-MM-DD)', format='%Y-%m-%d',validators=[DateRange(min=date.today())])
     time = SelectField('Appointment time', [validators.DataRequired()], choices=[('9.00am - 9.30am','9.00am - 9.30am'),('10.00am - 10.30am', '10.00am - 10.30am'), ('11.00am - 11.30am', '11.00am - 11.30am'),('12.00pm -12.30pm','12.00pm -12.30pm'),('3.00pm - 3.30pm','3.00pm - 3.30pm'),('4.00pm - 4.30pm', '4.00pm - 4.30pm'),('5.00pm -5.30pm',' 5.00pm -5.30pm')], default = '9.00am - 9.30am')
     remarks = TextAreaField('Additional request', [validators.Optional()])
-    doc=RadioField('Choice of doctor', choices=[('T', 'Dr Tan'), ('M', 'Dr Mok'), ('L', 'Dr Lim')], default='T')
+    def validate_remarks(self, remarks ):
+        excluded_chars = "*?!'^+%&/()=}][{$#"
+        for char in self.remarks.data:
+            if char in excluded_chars:
+                raise ValidationError(
+                    f"Character {char} is not allowed in username.")
+
+    doc=RadioField('Choice of doctor', choices=[('t', 'Dr Tan'), ('m', 'Dr Mok'), ('l', 'Dr Lim')], default='t')
+
 
 
 class CreateProductForm(FlaskForm):
