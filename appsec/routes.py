@@ -793,11 +793,50 @@ def useraddress():
         form.phone_no.data = user.phone_no
 
     if form.validate_on_submit():
-        user = current_user
-        user.shipping_address = form.shipping_address.data
-        user.postal_code = form.postal_code.data
-        user.unit_no = '#' + str(form.unit_number1.data) + '-' + str(form.unit_number2.data)
-        user.phone_no = form.phone_no.data
+        validate = True
+        ship_address = form.shipping_address.data
+        postal_code = form.postal_code.data 
+        unit_no = form.unit_number1.data
+        unit_no2 =form.unit_number2.data
+        phoneno = form.phone_no.data
+        
+ 
+        excluded_chars = "*?!'^+%&/()=}][{$#"
+
+
+        if excluded_chars in ship_address:
+                validate = False
+                raise ValidationError
+
+            
+        if excluded_chars in postal_code:
+                validate = False
+                raise ValidationError
+
+     
+
+        if excluded_chars in unit_no:
+                validate = False
+                raise ValidationError
+
+              
+        if excluded_chars in unit_no2:
+                validate = False
+                raise ValidationError
+
+        if excluded_chars in phoneno:
+                validate = False
+                raise ValidationError
+           
+  
+
+
+        if validate == True:
+          user = current_user
+          user.shipping_address = form.shipping_address.data
+          user.postal_code = form.postal_code.data
+          user.unit_no = '#' + str(form.unit_number1.data) + '-' + str(form.unit_number2.data)
+          user.phone_no = form.phone_no.data
 
         db.session.commit()
         flash(f'address has been updated', 'info')
@@ -1440,7 +1479,7 @@ def create_consultation():
 
             print('here3')
 
-            appointment = False
+            appointment = True
             fname = form.first_name.data.lower()
             lname = form.last_name.data.lower()
             date = form.date_joined.data
@@ -1458,24 +1497,22 @@ def create_consultation():
                 appointment = False
                 raise ValidationError
 
-            else:
-                appintment = True
+
             if excluded_chars in lname:
                 appointment = False
                 raise ValidationError
 
-            else:
-                appointment = False
+
 
             try :
                 datetime.strptime(date, '%Y-%m-%d')
-                appointment = True
+                
             except:
                 appointment = False
 
 
             if str(doc) == 't' or 't' or 'm' 'l':
-                appointment = True
+                i = "placeholder" 
 
 
             else:
@@ -1483,7 +1520,7 @@ def create_consultation():
                 raise ValidationError
 
             if  str(time) == '9.00am - 9.30am'  '10.00am - 10.30am' or '11.00am - 11.30am' or '12.00pm -12.30pm' or '3.00pm - 3.30pm' or '4.00pm - 4.30pm'  or  '5.00pm -5.30pm':
-                appointment = True
+                b = "placeholder"
 
 
             else:
@@ -1760,6 +1797,7 @@ def delete_feedback(user_id):
 
     else:
         return redirect(url_for('login'))
+
 @app.route('/feedback', methods=["GET", "POST"])
 def feedform():
     if current_user.is_authenticated:
@@ -1767,30 +1805,56 @@ def feedform():
       if form.validate_on_submit():
           user = current_user
 
-          tday = str(datetime.date.today())
+          tday = str(datetime.today())
           excluded_chars = "*?!'^+%&/()=}][{$#"
-          appointment = False
+          appointment = True
 
           ema = form.email.data.lower()
           sub = form.subject.data.lower()
           descrip = form.description.data.lower()
 
-          FEform = feedback(
-              username=user.username,
-              date=tday,
-              email=form.email.data.lower(),
-              subject=form.subject.data.lower(),
-              description=form.description.data.lower())
 
-          db.session.add(FEform)
-          db.session.commit()
 
-          return redirect(url_for('fb_submit'))
+
+
+          if excluded_chars in ema:
+                appointment = False
+                raise ValidationError
+
+
+          if excluded_chars in sub:
+                appointment = False
+                raise ValidationError
+
+
+          if excluded_chars in descrip:
+                appointment = False
+                raise ValidationError
+
+
+          if appointment == True:
+              ema = str(ema)
+              sub = str(sub)
+              descrip = str(descrip)
+
+
+              FEform = feedback(
+              username = user.username,
+              date = tday ,
+              email = ema,
+              subject = sub,
+              description = descrip)
+
+              db.session.add(FEform)
+              db.session.commit()
+
+              return redirect(url_for('fb_submit'))
       else:
         return render_template('user/guest/alisa/feedback.html', usersession = True, form = form)
 
     else:
         return redirect(url_for('login'))
+
 
     
 @app.route('/securitycheck', methods=['GET', 'POST'])
