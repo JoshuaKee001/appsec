@@ -1,6 +1,6 @@
-{% if current_user.role == "admin" %}
+{% if staffsession %}
 {% extends "admin_base.html" %}
-{% elif current_user.is_authenticated %}
+{% elif usersession %}
 {% extends "user_base.html" %}
 {% else %}
 {% extends "default_base.html" %}
@@ -377,6 +377,14 @@ padding:200px;
     </div>
     {% if staffsession %}
     <a class="nav-link" href="/Graphform">
+      <button type="button" class="btn btn-success">
+
+        Create Graph
+
+      </button>
+    </a>
+
+        <a class="nav-link" href="/UpGraphform">
       <button type="button" class="btn btn-success">
 
         Edit Graph
