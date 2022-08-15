@@ -42,13 +42,7 @@
                         <!--label>Username:</label>
                             <input type="text" name="name" class="form-control" placeholder="Username"-->
 
-                        
-                        {% for error in form.username.errors %}
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            {{ error }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endfor%}
+
 
                     </div>
                     <div class="col-12">
@@ -61,25 +55,13 @@
                         <!--label>Email:</label>
                             <input type="text" name="email" class="form-control" placeholder="Email"-->
 
-                        {% for error in form.email.errors %}
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            {{ error }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endfor%}
 
                     </div>
                     <div class="col-12">
                         {{ render_field(form.password, class="form-control", placeholder="Password") }}
                         <!--label>Password:</label>
                             <input type="password" name="password" class="form-control" placeholder="Password"-->
-                        
-                        {% for error in form.password.errors %}
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            {{ error }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endfor%}
+
     
                         
                     </div>
@@ -89,13 +71,7 @@
                         {% endif %}
                         <!--label>Confirm Password:</label>
                             <input type="password" name="password" class="form-control" placeholder=" Confirm Password"-->
-                        
-                        {% for error in form.password_confirm.errors %}
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            {{ error }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endfor%}
+
     
 
                     </div>
