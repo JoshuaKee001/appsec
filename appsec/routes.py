@@ -1,12 +1,9 @@
-from hashlib import new
-from sre_constants import CH_LOCALE
 import os
 import pyqrcode
 import datetime
 from io import BytesIO
 from cryptography.fernet import Fernet
 from flask import (
-    Flask,
     render_template,
     redirect,
     flash,
@@ -26,25 +23,24 @@ from sqlalchemy.exc import (
 from werkzeug.routing import BuildError
 
 
-from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
+from flask_bcrypt import check_password_hash
 
 from flask_login import (
-    UserMixin,
     login_user,
-    LoginManager,
     current_user,
     logout_user,
     login_required,
 )
 
-from app import create_app, db, login_manager, bcrypt, limiter, mail, jwt, required_roles, f
+from app import create_app, db, login_manager, bcrypt, limiter, required_roles
 from models import User, Product, graph, feedback
 from forms import LoginForm, SignUpForm, ChangePasswordForm, EditEmailForm, ForgotPasswordForm, \
     ResetPasswordForm, CreateProductForm, createConsultationForm, EmptyForm, Quantity, FeedbackForm, CardInfoForm, \
     Login2Form, FiltersAndSorting, AccountListSearchForm, EditNameForm, AddressForm, Gform
 from functions import send_password_reset_email, send_ban_email, send_unban_email, send_verification_email, \
-    allowed_file, ALLOWED_EXTENSIONS, encrypt, decrypt
+    allowed_file, encrypt, decrypt
 from wtforms import ValidationError
+
 
 # done by joshua
 @login_manager.user_loader
@@ -89,11 +85,9 @@ def login():
     form = LoginForm()
     validate = False
 
-
     if form.validate_on_submit():
 
      excluded_chars = "*?!'^+%&/()=}][{$#"
-
 
      email = form.email.data.lower()
      password = form.password.data
@@ -111,8 +105,7 @@ def login():
      else:
             validate = True
 
-
-     if validate == True:
+     if validate:
         try:
             
             user = User.query.filter_by(email=email).first()
@@ -167,9 +160,6 @@ def signup():
 
             excluded_chars = "*?!'^+%&/()=}][{$#"
 
-
-
-
             if excluded_chars in username:
                 appointment = False
                 raise ValidationError
@@ -183,12 +173,11 @@ def signup():
             else:
                 appointment = True
 
-
             consultstate = False
-            if appointment == True:
+            if appointment:
 
               newuser = User(username=username, email=email, password=bcrypt.generate_password_hash(password),
-                           consultstate=consultstate, pfpfilename='default.png', failedaccess = 0)
+                             consultstate=consultstate, pfpfilename='default.png', failedaccess=0)
 
               db.session.add(newuser)
               db.session.commit()
@@ -829,27 +818,21 @@ def useraddress():
         unit_no = form.unit_number1.data
         unit_no2 =form.unit_number2.data
         phoneno = form.phone_no.data
-        
- 
-        excluded_chars = "*?!'^+%&/()=}][{$#"
 
+        excluded_chars = "*?!'^+%&/()=}][{$#"
 
         if excluded_chars in ship_address:
                 validate = False
                 raise ValidationError
 
-            
         if excluded_chars in str(postal_code):
                 validate = False
                 raise ValidationError
-
-     
 
         if excluded_chars in str(unit_no):
                 validate = False
                 raise ValidationError
 
-              
         if excluded_chars in str(unit_no2):
                 validate = False
                 raise ValidationError
@@ -857,11 +840,8 @@ def useraddress():
         if excluded_chars in str(phoneno):
                 validate = False
                 raise ValidationError
-           
-  
 
-
-        if validate == True:
+        if validate:
           user = current_user
           user.shipping_address = form.shipping_address.data
           user.postal_code = form.postal_code.data
@@ -914,16 +894,16 @@ def search():
 
     if request.method == "POST":
 
-        if form.Medicine_category.data == True:
+        if form.Medicine_category.data:
             products = Product.query.filter(Product.category.contains("Medicine")).paginate(page=page, per_page=8)
 
-        if form.TestKit_category.data == True:
+        if form.TestKit_category.data:
             products = Product.query.filter(Product.category.contains("Test Kit")).paginate(page=page, per_page=8)
 
-        if form.Supplement_category.data == True:
+        if form.Supplement_category.data:
             products = Product.query.filter(Product.category.contains("Supplement")).paginate(page=page, per_page=8)
 
-        if form.FirstAid_category.data == True:
+        if form.FirstAid_category.data:
             products = Product.query.filter(Product.category.contains("First Aid")).paginate(page=page, per_page=8)
 
         if form.sorting_methods == "Price (Descending)":
@@ -944,6 +924,7 @@ def search():
             products = products
 
     return render_template('user/guest/joshua/GuestStore/search.html', products=products, form=form)
+#joshua work end
 
 
 @app.route('/view_product', methods=["GET", "POST"])
