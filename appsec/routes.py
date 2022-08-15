@@ -84,6 +84,7 @@ def login():
 
     if form.validate_on_submit():
         try:
+            
             user = User.query.filter_by(email=form.email.data.lower()).first()
             if check_password_hash(user.password, form.password.data):
                 if not user.banned:
@@ -129,7 +130,7 @@ def signup():
     form = SignUpForm()
     if form.validate_on_submit():
         try:
-            appointment = True
+            appointment = False
             username = form.username.data
             email = form.email.data.lower()
             password = form.password.data
