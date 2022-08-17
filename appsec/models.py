@@ -116,7 +116,7 @@ class feedback(db.Model):
     date = db.Column(db.String(50))
     email = db.Column(db.String(50))
     subject = db.Column(db.String(50))
-    description = db.Column(db.String(30))
+    description = db.Column(db.String(300))
 
 
 

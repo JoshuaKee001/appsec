@@ -192,7 +192,7 @@ class FeedbackForm(FlaskForm):
                           choices=[('Website Design', 'Website Design'), ('Website Functions', 'Website Functions'),
                                    ('General', 'General'), ('Content', 'Content'), ('Copyright', 'Copyright'),
                                    ('Others', 'Others')], default='General')
-    description = TextAreaField()
+    description = TextAreaField(validators=[InputRequired(), Length(max=300)])
 
 
 class FiltersAndSorting(FlaskForm):
