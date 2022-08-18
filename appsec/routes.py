@@ -43,6 +43,7 @@ from wtforms import ValidationError
 
 
 # done by joshua
+# input validation and access control tracking done by Xuzhi
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -1114,7 +1115,7 @@ def shoppingComplete():
             session.pop('cart', None)
             session.pop('total', None)
             return render_template('user/guest/alisa/shoppingComplete.html', usersession = True, cart = cart, total=total)
-
+# done by XuZhi
 
 @app.route('/News', methods=['GET', 'POST'])
 def News():
